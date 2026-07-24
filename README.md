@@ -82,6 +82,18 @@ Curated disclosed real-world vulnerability writeups and research blogs to build 
 - [Bypass of biometrics security functionality (#637194)](https://hackerone.com/reports/637194)
 - [Two-factor authentication bypass due to vuln endpoint (#202425)](https://hackerone.com/reports/202425)
 
+### Conference Talks & Courses
+- [Android App Reverse Engineering 101 (Maddie Stone)](https://maddiestone.github.io/AndroidAppRE/)
+- [Pwning Android Apps at Scale (DEF CON)](https://www.youtube.com/watch?v=24MwHjqMjRk)
+- [Hacking Mobile Applications with Frida (David Coursey)](https://www.youtube.com/watch?v=xwyXgykedzk)
+- [Adoption of Anti-Debugging and Anti-Tampering Protections (Paper)](https://stefanoberlato.it/publications/pdf/JISA20.pdf)
+
+### Online APK Scanners & Decompilers
+- [Guardsquare AppSweep Mobile Security Scanner](https://www.guardsquare.com/appsweep-mobile-application-security-testing)
+- [Online Java APK Decompiler](http://www.javadecompilers.com/apk)
+- [BeVigil Mobile App Security OSINT Scanner](https://bevigil.com/osint-api)
+- [BlackDex - Unpack DEX Dump Tool](https://github.com/CodingGay/BlackDex)
+
 ---
 
 ## Key Capabilities & Modules
