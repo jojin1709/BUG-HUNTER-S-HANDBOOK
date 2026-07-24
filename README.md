@@ -31,6 +31,7 @@ It covers reverse engineering, dynamic instrumentation, IPC component attacks, a
 
 - [Overview](#overview)
 - [Key Capabilities & Modules](#key-capabilities--modules)
+- [Disclosed HackerOne Reports & Writeups](#disclosed-hackerone-reports--writeups)
 - [22+ Tool Repository](#22-tool-repository)
 - [Step-by-Step Methodology Roadmap](#step-by-step-methodology-roadmap)
 - [Framework-Specific Testing](#framework-specific-testing)
@@ -49,6 +50,37 @@ It covers reverse engineering, dynamic instrumentation, IPC component attacks, a
 ### Why This Handbook Exists
 
 Android application security requires mastering multiple tools (JADX, APKTool, Frida, Objection, Drozer, Burp Suite) across different execution environments. This handbook streamlines that workflow into a structured, step-by-step methodology with copyable terminal snippets, live calculators, and framework-specific pipelines.
+
+---
+
+## Disclosed HackerOne Reports & Writeups
+
+Curated disclosed real-world vulnerability writeups and research blogs to build an exploitation mindset:
+
+### Hardcoded Credentials
+- [Disclosure of all uploads via hardcoded API secret](https://hackerone.com/reports/351555)
+
+### WebView & Deep Links
+- [Android security checklist: WebView (Oversecured)](https://blog.oversecured.com/Android-security-checklist-webview/)
+- [Path traversal in deeplink query parameter (#2553411)](https://hackerone.com/reports/2553411)
+- [Account Takeover Via DeepLink (#855618)](https://hackerone.com/reports/855618)
+- [Sensitive information disclosure (#401793)](https://hackerone.com/reports/401793)
+
+### RCE / ACE & Code Execution
+- [Why dynamic code loading could be dangerous for your apps (Oversecured)](https://blog.oversecured.com/Why-dynamic-code-loading-could-be-dangerous-for-your-apps-a-Google-example/)
+- [CVE-2020-8913: Persistent arbitrary code execution in Google Play Core library](https://blog.oversecured.com/Oversecured-automatically-discovers-persistent-code-execution-in-the-Google-Play-Core-Library/)
+- [TikTok: Three persistent arbitrary code executions](https://blog.oversecured.com/Oversecured-detects-dangerous-vulnerabilities-in-the-TikTok-Android-app/)
+
+### File Theft & Content Providers
+- [SQL Injection in Content Provider (#291764)](https://hackerone.com/reports/291764)
+- [Android security checklist: theft of arbitrary files](https://blog.oversecured.com/Android-security-checklist-theft-of-arbitrary-files/)
+- [Vulnerable to local file steal, Javascript injection, Open redirect (#499348)](https://hackerone.com/reports/499348)
+- [Token leakage due to stolen files via unprotected Activity (#288955)](https://hackerone.com/reports/288955)
+
+### Auth & Bypasses
+- [Accidental $70k Google Pixel Lock Screen Bypass](https://bugs.xdavidhu.me/google/2022/11/10/accidental-70k-google-pixel-lock-screen-bypass/)
+- [Bypass of biometrics security functionality (#637194)](https://hackerone.com/reports/637194)
+- [Two-factor authentication bypass due to vuln endpoint (#202425)](https://hackerone.com/reports/202425)
 
 ---
 

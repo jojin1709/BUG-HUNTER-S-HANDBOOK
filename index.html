@@ -168,8 +168,12 @@
           </div>
 
           <div>
-            <div class="px-3 text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest mb-2">Reporting</div>
+            <div class="px-3 text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest mb-2">Research &amp; Reports</div>
             <div class="space-y-1">
+              <a href="#disclosed-reports" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">🔥</span>
+                <span>Disclosed Writeups</span>
+              </a>
               <a href="#report" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
                 <span class="text-base group-hover:scale-110 transition-transform">📝</span>
                 <span>Report Studio</span>
@@ -1499,6 +1503,74 @@ dz> run app.provider.query content://com.target.app.provider/users --projection 
 dz> run app.provider.download content://com.target.app.provider/files/../../../data/data/com.target.app/databases/app.db</pre>
             </div>
           </details>
+
+        </div>
+      </section>
+
+      <!-- DISCLOSED REPORTS & BOUNTY WRITEUPS SECTION -->
+      <section id="disclosed-reports" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
+        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
+          <span class="w-2 h-0.5 bg-emerald-400"></span> Real-World Disclosures
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-100 tracking-tight mb-4">Disclosed HackerOne Reports &amp; Technical Writeups</h2>
+        <p class="text-slate-400 text-sm max-w-3xl mb-10">Study real vulnerability writeups disclosed by top researchers on HackerOne and Oversecured to build exploitation mindset.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 font-mono text-xs">
+          
+          <!-- Category 1: WebView & Deep Links -->
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3 hover:border-emerald-500/40 transition-all">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-slate-100 text-sm">🔗 WebView &amp; Deep Link Exploitation</h3>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">HackerOne &amp; Blogs</span>
+            </div>
+            <ul class="space-y-2 text-slate-300">
+              <li>• <a href="https://hackerone.com/reports/2553411" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Path traversal in deeplink query parameter (#2553411)</a></li>
+              <li>• <a href="https://hackerone.com/reports/855618" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Account Takeover Via DeepLink (#855618)</a></li>
+              <li>• <a href="https://hackerone.com/reports/401793" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Sensitive information disclosure via DeepLink (#401793)</a></li>
+              <li>• <a href="https://blog.oversecured.com/Android-security-checklist-webview/" target="_blank" rel="noopener" class="text-teal-400 hover:underline">Android WebView Security Checklist (Oversecured)</a></li>
+            </ul>
+          </div>
+
+          <!-- Category 2: RCE & Dynamic Loading -->
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3 hover:border-emerald-500/40 transition-all">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-slate-100 text-sm">💥 RCE &amp; Arbitrary Code Execution</h3>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-rose-500/10 text-rose-400 border border-rose-500/20">CRITICAL IMPACT</span>
+            </div>
+            <ul class="space-y-2 text-slate-300">
+              <li>• <a href="https://blog.oversecured.com/Oversecured-automatically-discovers-persistent-code-execution-in-the-Google-Play-Core-Library/" target="_blank" rel="noopener" class="text-rose-400 hover:underline">CVE-2020-8913: Google Play Core Library RCE</a></li>
+              <li>• <a href="https://blog.oversecured.com/Oversecured-detects-dangerous-vulnerabilities-in-the-TikTok-Android-app/" target="_blank" rel="noopener" class="text-rose-400 hover:underline">TikTok: 3 Persistent Arbitrary Code Executions</a></li>
+              <li>• <a href="https://blog.oversecured.com/Why-dynamic-code-loading-could-be-dangerous-for-your-apps-a-Google-example/" target="_blank" rel="noopener" class="text-teal-400 hover:underline">Dynamic Code Loading Hazards in Google Apps</a></li>
+            </ul>
+          </div>
+
+          <!-- Category 3: File Theft & Content Providers -->
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3 hover:border-emerald-500/40 transition-all">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-slate-100 text-sm">📂 File Theft &amp; ContentProvider Flaws</h3>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20">HIGH IMPACT</span>
+            </div>
+            <ul class="space-y-2 text-slate-300">
+              <li>• <a href="https://hackerone.com/reports/291764" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">SQL Injection in Content Provider (#291764)</a></li>
+              <li>• <a href="https://hackerone.com/reports/499348" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Local File Theft &amp; JS Injection in WebView (#499348)</a></li>
+              <li>• <a href="https://hackerone.com/reports/288955" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Token leakage due to stolen files via Activity (#288955)</a></li>
+              <li>• <a href="https://blog.oversecured.com/Gaining-access-to-arbitrary-Content-Providers/" target="_blank" rel="noopener" class="text-teal-400 hover:underline">Gaining Access to Arbitrary Content Providers</a></li>
+            </ul>
+          </div>
+
+          <!-- Category 4: Auth & Lock Bypasses -->
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3 hover:border-emerald-500/40 transition-all">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-slate-100 text-sm">🔓 Authentication &amp; Lock Bypasses</h3>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">BOUNTY HIGHLIGHTS</span>
+            </div>
+            <ul class="space-y-2 text-slate-300">
+              <li>• <a href="https://bugs.xdavidhu.me/google/2022/11/10/accidental-70k-google-pixel-lock-screen-bypass/" target="_blank" rel="noopener" class="text-cyan-400 hover:underline">Accidental $70k Google Pixel Lock Screen Bypass</a></li>
+              <li>• <a href="https://hackerone.com/reports/637194" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Bypass of Biometrics Security Functionality (#637194)</a></li>
+              <li>• <a href="https://hackerone.com/reports/202425" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Two-Factor Authentication Endpoint Bypass (#202425)</a></li>
+              <li>• <a href="https://hackerone.com/reports/351555" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">Disclosure of uploads via hardcoded API secret (#351555)</a></li>
+            </ul>
+          </div>
 
         </div>
       </section>
