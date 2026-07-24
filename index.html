@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Android Bug Hunter's Handbook // Pro Portal</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Tailwind CSS via CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Plus Jakarta Sans', 'sans-serif'],
+          mono: ['JetBrains Mono', 'monospace'],
+        },
+        colors: {
+          brand: {
+            50: '#f0fdf4',
+            100: '#dcfce7',
+            400: '#4ade80',
+            500: '#22c55e',
+            600: '#16a34a',
+            700: '#15803d',
+          },
+          dark: {
+            bg: '#090d16',
+            surface: '#0f172a',
+            card: '#162032',
+            border: '#1e293b',
+          }
+        },
+        animation: {
+          'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          'float': 'float 5s ease-in-out infinite',
+        },
+        keyframes: {
+          float: {
+            '0%, 100%': { transform: 'translateY(0px)' },
+            '50%': { transform: 'translateY(-8px)' },
+          }
+        }
+      }
+    }
+  }
+</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#090d16] text-slate-200 font-sans antialiased selection:bg-emerald-500 selection:text-slate-950">
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Mobile Top Header Bar -->
+  <header class="lg:hidden sticky top-0 z-40 bg-[#090d16]/90 backdrop-blur-xl border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 p-[1px] shadow-lg shadow-emerald-500/20">
+        <div class="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center font-mono font-extrabold text-emerald-400 text-base">
+          λ
+        </div>
+      </div>
+      <div>
+        <div class="font-bold text-slate-100 text-sm tracking-tight">Bug Hunter's Handbook</div>
+        <div class="text-[10px] font-mono text-emerald-400">v3.5 MASTER EDITION</div>
+      </div>
+    </div>
+    <button id="mobileMenuBtn" class="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+    </button>
+  </header>
+
+  <div class="flex min-h-screen">
+    
+    <!-- DESKTOP SIDEBAR NAVIGATION -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-[#0c121e]/95 backdrop-blur-2xl border-r border-slate-800/80 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col justify-between overflow-y-auto">
+      <div>
+        <!-- Brand Header -->
+        <div class="p-6 border-b border-slate-800/80 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-400 p-[1px] shadow-xl shadow-emerald-500/20 flex-none">
+            <div class="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center font-mono font-black text-emerald-400 text-lg">
+              λ
+            </div>
+          </div>
+          <div class="min-w-0">
+            <div class="font-mono text-xs font-bold tracking-wider text-slate-100 truncate">BUG HUNTER'S HANDBOOK</div>
+            <div class="text-[10px] font-mono text-emerald-400 font-semibold tracking-wide truncate">ANDROID SECURITY</div>
+          </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="p-4 space-y-6 text-xs font-medium">
+          
+          <div>
+            <div class="px-3 text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest mb-2">Getting Started</div>
+            <div class="space-y-1">
+              <a href="#governance" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">⚖️</span>
+                <span>Scope &amp; Governance</span>
+              </a>
+              <a href="#setup" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">⚡</span>
+                <span>Lab &amp; AVD Config</span>
+              </a>
+              <a href="#android14" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">🤖</span>
+                <span>Android 13/14 Security</span>
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <div class="px-3 text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest mb-2">Tools &amp; Scripts</div>
+            <div class="space-y-1">
+              <a href="#tools" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">🛠️</span>
+                <span class="flex-1">Tool Repository</span>
+                <span class="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 text-[10px] font-mono border border-emerald-500/20">22</span>
+              </a>
+              <a href="#script" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">🚀</span>
+                <span>Auto Recon Script</span>
+              </a>
+              <a href="#roadmap" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">🧭</span>
+                <span>Testing Roadmap</span>
+              </a>
+              <a href="#tutorials" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">📺</span>
+                <span>Video Tutorials</span>
+              </a>
+              <a href="#frameworks" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">🧩</span>
+                <span>Framework Reversing</span>
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <div class="px-3 text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest mb-2">Attacks &amp; Calculator</div>
+            <div class="space-y-1">
+              <a href="#deeplinks" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">🔗</span>
+                <span>Deep Link Fuzzing</span>
+              </a>
+              <a href="#cvss" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">🧮</span>
+                <span>Bounty &amp; CVSS Calculator</span>
+              </a>
+              <a href="#vulns" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">📋</span>
+                <span>Audit Checklist</span>
+              </a>
+              <a href="#targets" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">🎯</span>
+                <span>Practice Targets</span>
+              </a>
+              <a href="#advanced" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">📖</span>
+                <span>Advanced Native Hooks</span>
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <div class="px-3 text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest mb-2">Reporting</div>
+            <div class="space-y-1">
+              <a href="#report" class="navlink flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-all group">
+                <span class="text-base group-hover:scale-110 transition-transform">📝</span>
+                <span>Report Studio</span>
+              </a>
+            </div>
+          </div>
+
+        </nav>
+      </div>
+
+      <!-- Sidebar Progress Widget -->
+      <div class="p-4 border-t border-slate-800/80 bg-slate-950/60">
+        <div class="flex items-center justify-between text-xs mb-2 font-mono">
+          <span class="text-slate-400 font-medium">Checklist Audit</span>
+          <span id="progressPct" class="text-emerald-400 font-bold">0 / 12</span>
+        </div>
+        <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800">
+          <div id="progressFill" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-500"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 lg:pl-72 min-w-0">
+      
+      <!-- Top Utility Header Bar (Desktop) -->
+      <div class="hidden lg:flex sticky top-0 z-30 bg-[#090d16]/90 backdrop-blur-xl border-b border-slate-800/80 px-8 py-3.5 items-center justify-end">
+
+        <div class="flex items-center gap-4">
+          <!-- Global Search Command Bar -->
+          <button id="globalSearchBtn" class="flex items-center gap-3 px-4 py-2 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700 text-xs font-mono transition-all">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <span>Search 22+ tools &amp; commands...</span>
+            <kbd class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded text-[10px] border border-slate-700">⌘K</kbd>
+          </button>
+
+          <a href="#report" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-semibold text-xs shadow-lg shadow-emerald-500/20 transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5">
+            <span>Report Generator</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- HERO BANNER SECTION -->
+      <section id="top" class="relative overflow-hidden pt-12 pb-20 lg:pt-16 lg:pb-24 border-b border-slate-800/80 bg-gradient-to-b from-slate-900/60 via-[#090d16] to-[#090d16] px-6 sm:px-12">
+        
+        <!-- Glow Orbs -->
+        <div class="absolute top-1/4 left-1/3 w-[500px] h-[300px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute top-1/3 right-10 w-[400px] h-[250px] bg-teal-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="max-w-6xl mx-auto relative z-10">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <div class="lg:col-span-7 space-y-6">
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono font-medium">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                ANDROID BUG BOUNTY PORTAL v3.5 MASTER EDITION
+              </div>
+
+              <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-100 tracking-tight leading-[1.15]">
+                Decompile. Intercept.<br>
+                <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">Hook. Liquidate.</span>
+              </h1>
+
+              <p class="text-base sm:text-lg text-slate-400 leading-relaxed font-normal max-w-xl">
+                An interactive field guide for Android security research. Complete with video walkthrough guides, setup commands, auto recon scripts, deep link fuzzers, CVSS calculators, and native memory hooks.
+              </p>
+
+              <!-- Stats Cards -->
+              <div class="grid grid-cols-4 gap-3 py-2 max-w-lg">
+                <div class="bg-slate-900/80 border border-slate-800 p-3 rounded-2xl text-center">
+                  <div class="text-xl font-bold font-mono text-emerald-400">22+</div>
+                  <div class="text-[11px] text-slate-400 font-medium">Tools Indexed</div>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 p-3 rounded-2xl text-center">
+                  <div class="text-xl font-bold font-mono text-teal-400">09</div>
+                  <div class="text-[11px] text-slate-400 font-medium">Roadmap Steps</div>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 p-3 rounded-2xl text-center">
+                  <div class="text-xl font-bold font-mono text-cyan-400">04</div>
+                  <div class="text-[11px] text-slate-400 font-medium">Video Guides</div>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 p-3 rounded-2xl text-center">
+                  <div class="text-xl font-bold font-mono text-amber-400">12</div>
+                  <div class="text-[11px] text-slate-400 font-medium">Vuln Classes</div>
+                </div>
+              </div>
+
+              <!-- CTA Buttons -->
+              <div class="flex flex-wrap gap-4 pt-2">
+                <a href="#tutorials" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold text-sm shadow-xl shadow-emerald-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2">
+                  <span>📺 Watch Video Tutorials</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </a>
+                <a href="#script" class="px-6 py-3.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-800 hover:border-slate-700 font-semibold text-sm transition-all flex items-center gap-2">
+                  <span>🚀 Auto Recon Script</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Terminal Window -->
+            <div class="lg:col-span-5">
+              <div class="bg-[#0b101c] border border-slate-800/90 rounded-2xl shadow-2xl overflow-hidden group hover:border-emerald-500/30 transition-all">
+                <div class="bg-slate-950/90 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-rose-500/90 inline-block"></span>
+                    <span class="w-3 h-3 rounded-full bg-amber-500/90 inline-block"></span>
+                    <span class="w-3 h-3 rounded-full bg-emerald-500/90 inline-block"></span>
+                    <span class="ml-2 font-mono text-xs text-slate-400 font-medium">zsh &mdash; target-recon.sh</span>
+                  </div>
+                  <button id="copyTerminalBtn" class="text-[11px] font-mono text-slate-400 hover:text-emerald-400 transition-colors">
+                    copy log
+                  </button>
+                </div>
+                <div id="termBody" class="p-5 font-mono text-xs sm:text-sm text-slate-300 min-h-[290px] space-y-2 bg-[#080c16] overflow-x-auto">
+                  <!-- Terminal typed text script.js -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- GOVERNANCE & SCOPE SECTION -->
+      <section id="governance" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
+        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
+          <span class="w-2 h-0.5 bg-emerald-400"></span> Governance &amp; Boundaries
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-100 tracking-tight mb-4">Scope &amp; Legal Guidelines</h2>
+        <p class="text-slate-400 text-sm max-w-3xl mb-10">Delineate client-side reverse engineering from backend testing, and enforce duplicate-checking protocols before submission.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/30 transition-all space-y-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-mono font-bold text-base">01</div>
+            <h3 class="font-bold text-slate-100 text-lg">Client-Side vs Backend Scope Boundaries</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              Client-side static reversing (reading APK manifest, Smali bytecode, and SQLite databases) applies directly to the target application binary. Always confirm backend API hostnames against your target program's in-scope asset list prior to sending active web traffic.
+            </p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/30 transition-all space-y-3">
+            <div class="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center font-mono font-bold text-base">02</div>
+            <h3 class="font-bold text-slate-100 text-lg">Duplicate Checking Protocol</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              Check public disclosure logs, issue trackers, and past project notes before submitting. Ensure your finding demonstrates concrete impact (e.g. account takeover or unauthorized data access) rather than submitting plain static decompiler warnings.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- LAB SETUP SECTION WITH SPECIFIC HARDWARE RECOMMENDATIONS -->
+      <section id="setup" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
+        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
+          <span class="w-2 h-0.5 bg-emerald-400"></span> 01 &bull; Lab Setup &amp; AVD Specs
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-100 tracking-tight mb-4">Build Your Testing Lab</h2>
+        <p class="text-slate-400 text-sm max-w-3xl mb-10">Select an environment with root access, HTTP proxy interception, and hardware optimization tailored for your PC hardware.</p>
+
+        <!-- Hardware Tailored Banner Card -->
+        <div class="p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900 to-[#0b1324] border border-emerald-500/40 mb-8 space-y-4 shadow-xl">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+              <span class="font-mono text-xs font-bold text-emerald-400 uppercase tracking-wider">HARDWARE OPTIMIZED FOR YOUR PC (Intel Core i5-12500H &bull; 16GB RAM)</span>
+            </div>
+            <span class="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-[10px] font-bold">SMOOTH 60 FPS</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono pt-2">
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+              <div class="text-slate-100 font-bold text-sm">📱 Best AVD Phone Model:</div>
+              <div class="text-emerald-400 font-bold">Pixel 6 or Pixel 5</div>
+              <p class="text-slate-400 text-[11px] leading-relaxed">Optimal screen resolution (1080x2340 @ 420dpi) that runs silky smooth on 12th Gen Intel i5 without choking RAM.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+              <div class="text-slate-100 font-bold text-sm">💿 Best System Image:</div>
+              <div class="text-teal-400 font-bold">Android 13.0 (API 33)</div>
+              <div class="text-slate-300">Google APIs (x86_64)</div>
+              <p class="text-slate-400 text-[11px] leading-relaxed"><strong class="text-rose-400">CRITICAL:</strong> Select "Google APIs", NOT "Google Play". Google APIs images allow easy root access (`adb root`).</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+              <div class="text-slate-100 font-bold text-sm">⚙️ AVD Hardware Settings:</div>
+              <ul class="text-slate-300 text-[11px] space-y-1 list-disc pl-4">
+                <li>RAM: <strong>4096 MB (4GB)</strong></li>
+                <li>VM Heap: <strong>512 MB</strong></li>
+                <li>Graphics: <strong>Hardware - GLES 2.0</strong></li>
+                <li>Cores: <strong>4 Cores</strong></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          
+          <!-- AVD -->
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">Android Studio AVD</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Free / Official</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Official emulator. Select Google APIs (non-Play Store) system images for easy root access via Magisk or direct su binary replacement.</p>
+            </div>
+            <div class="space-y-2">
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-emerald-300 flex items-center justify-between gap-2">
+                <code class="overflow-x-auto">sdkmanager --install "system-images;android-33;google_apis;x86_64"</code>
+                <button class="copy-btn text-xs text-slate-400 hover:text-emerald-400 flex-none">Copy</button>
+              </div>
+              <a href="https://developer.android.com/studio" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono inline-flex items-center gap-1">
+                Official Download Site &rarr;
+              </a>
+            </div>
+          </div>
+
+          <!-- Genymotion -->
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/40 transition-all flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">Genymotion</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-teal-500/10 text-teal-400 border border-teal-500/20">Free Tier</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Fast VirtualBox-based emulator platform with automated root toggles and fast multi-version OS switching.</p>
+            </div>
+            <div class="space-y-2">
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-slate-400 flex items-center justify-between gap-2">
+                <code>genymotion desktop installer</code>
+                <button class="copy-btn text-xs text-slate-400 hover:text-teal-400 flex-none">Copy</button>
+              </div>
+              <a href="https://www.genymotion.com/download/" target="_blank" rel="noopener" class="text-xs text-teal-400 hover:underline font-mono inline-flex items-center gap-1">
+                Download Genymotion &rarr;
+              </a>
+            </div>
+          </div>
+
+          <!-- Waydroid -->
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">Waydroid Container</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Linux Container</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Container-based Android system for Linux hosts. Offers near-native performance and LXC container access.</p>
+            </div>
+            <div class="space-y-2">
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-emerald-300 flex items-center justify-between gap-2">
+                <code>sudo apt install waydroid</code>
+                <button class="copy-btn text-xs text-slate-400 hover:text-emerald-400 flex-none">Copy</button>
+              </div>
+              <a href="https://waydro.id/" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono inline-flex items-center gap-1">
+                Waydroid Documentation &rarr;
+              </a>
+            </div>
+          </div>
+
+          <!-- Rooted Physical Device -->
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">Rooted Physical Device</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Recommended</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Provides minimal anti-emulator noise for targets with root/emulator detection. Flash Magisk + Shamiko.</p>
+            </div>
+            <div class="space-y-2">
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-emerald-300 flex items-center justify-between gap-2">
+                <code>fastboot flash boot patched_boot.img</code>
+                <button class="copy-btn text-xs text-slate-400 hover:text-emerald-400 flex-none">Copy</button>
+              </div>
+              <a href="https://github.com/topjohnwu/Magisk" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono inline-flex items-center gap-1">
+                Magisk GitHub Repo &rarr;
+              </a>
+            </div>
+          </div>
+
+          <!-- Corellium -->
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-purple-500/40 transition-all flex flex-col justify-between space-y-4 md:col-span-2">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">Corellium Cloud Virtualization</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-500/10 text-purple-400 border border-purple-500/20">Enterprise Cloud</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Enterprise cloud virtual ARM Android/iOS devices with root, snapshotting, and kernel-level inspection out of the box.</p>
+            </div>
+            <div class="space-y-2">
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-slate-400 flex items-center justify-between gap-2">
+                <code>corellium.com (Browser SaaS Platform)</code>
+                <button class="copy-btn text-xs text-slate-400 hover:text-purple-400 flex-none">Copy</button>
+              </div>
+              <a href="https://www.corellium.com/" target="_blank" rel="noopener" class="text-xs text-purple-400 hover:underline font-mono inline-flex items-center gap-1">
+                Visit Corellium &rarr;
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Windows + WSL Advice Card -->
+        <div class="p-5 rounded-2xl bg-slate-900/90 border border-emerald-500/30 flex items-start gap-4">
+          <div class="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 font-mono text-xs font-bold flex-none">
+            PRO-TIP
+          </div>
+          <p class="text-slate-300 text-xs leading-relaxed">
+            <strong class="text-slate-100">Windows 11 + WSL Kali Setup:</strong> Run the AVD/Genymotion emulator on Windows 11 host (for GPU acceleration), while running Frida, JADX, APKTool, MobSF, and Drozer directly inside WSL Kali Linux. Point the emulator proxy to your WSL IP.
+          </p>
+        </div>
+      </section>
+
+      <!-- ULTIMATE TOOL REPOSITORY SECTION -->
+      <section id="tools" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
+          <div>
+            <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
+              <span class="w-2 h-0.5 bg-emerald-400"></span> 02 &bull; Tool Repository
+            </div>
+            <h2 class="text-3xl font-extrabold text-slate-100 tracking-tight">Ultimate Tool Repository</h2>
+            <p class="text-slate-400 text-sm mt-2">Every tool indexed with direct download links, install commands, and usage parameters.</p>
+          </div>
+
+          <!-- Search Input -->
+          <div class="relative w-full md:w-80">
+            <input type="text" id="toolSearchInput" placeholder="Filter tools by name, tag or command..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 pl-10 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 transition-colors font-mono">
+            <svg class="w-4 h-4 text-slate-500 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="flex flex-wrap gap-2 mb-8" id="catFilter">
+          <button class="filter-btn active px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20 transition-all" data-cat="all">All Tools (22)</button>
+          <button class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200 transition-all" data-cat="static">Static Analysis</button>
+          <button class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200 transition-all" data-cat="dynamic">Dynamic &amp; Frida</button>
+          <button class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200 transition-all" data-cat="network">Network Traffic</button>
+          <button class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200 transition-all" data-cat="ipc">IPC &amp; Components</button>
+          <button class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200 transition-all" data-cat="reverse">Reverse Engineering</button>
+          <button class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-medium bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200 transition-all" data-cat="utility">Utilities &amp; Patching</button>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="toolGrid">
+          
+          <!-- JADX -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="static">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">JADX</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">STATIC DECOMPILER</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Decompiles Android DEX &amp; APK binaries directly into readable Java code with cross-references.</p>
+              <a href="https://github.com/skylot/jadx" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 GitHub: skylot/jadx
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-emerald-300">
+                <code>sudo apt install jadx</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>jadx-gui target.apk</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- APKTool -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="static">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">APKTool</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">DISASSEMBLER</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Decodes resources and disassembles DEX to Smali bytecode. Enables rebuilding patched APKs.</p>
+              <a href="https://github.com/iBotPeaches/Apktool" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 GitHub: iBotPeaches/Apktool
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-emerald-300">
+                <code>sudo apt install apktool</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>apktool d target.apk -o ./unpacked</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- MobSF -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="static">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">MobSF</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">AUTO SCANNER</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Mobile Security Framework — automated static + dynamic analysis web application for mobile binaries.</p>
+              <a href="https://github.com/MobSF/Mobile-Security-Framework-MobSF" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 GitHub: MobSF
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-emerald-300">
+                <code>docker pull opensecurity/mobile-security-framework-mobsf</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>docker run -it -p 8000:8000 opensecurity/mobile-security-framework-mobsf</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- apkleaks -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="static">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">apkleaks</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">SECRET SCANNER</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Scanning tool for extracting URIs, endpoints, API keys, and hardcoded secrets from APK files.</p>
+              <a href="https://github.com/dwisiswant0/apkleaks" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 GitHub: dwisiswant0/apkleaks
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-emerald-300">
+                <code>pip install apkleaks</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>apkleaks -f target.apk -o leaks.txt</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TruffleHog -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="static">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">TruffleHog</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">ENTROPY SCANNER</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">High-entropy secret scanner designed to audit decompiled code directories for private keys.</p>
+              <a href="https://github.com/trufflesecurity/trufflehog" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 GitHub: trufflesecurity/trufflehog
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-emerald-300">
+                <code>pip install trufflehog</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>trufflehog filesystem ./unpacked</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- QARK -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="static">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">QARK</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">CODE AUDITOR</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Quick Android Review Kit — static analysis tool designed to inspect Java source code and APKs.</p>
+              <a href="https://github.com/linkedin/qark" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 GitHub: linkedin/qark
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-emerald-300">
+                <code>pip install qark</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>qark --apk target.apk</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Frida -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="dynamic">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">Frida + frida-tools</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-teal-500/10 text-teal-400 border border-teal-500/20">INSTRUMENTATION</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Dynamic instrumentation toolkit to inject JS scripts into native and Java processes live at runtime.</p>
+              <a href="https://github.com/frida/frida" target="_blank" rel="noopener" class="text-xs text-teal-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 GitHub: frida/frida
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-teal-300">
+                <code>pip install frida-tools frida</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-teal-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>frida -U -f com.target.app -l script.js</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-teal-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Objection -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="dynamic">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">Objection</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-teal-500/10 text-teal-400 border border-teal-500/20">RUNTIME EXPLORER</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Runtime mobile exploration toolkit powered by Frida. SSL pinning bypass, root bypass, and keystore dumps.</p>
+              <a href="https://github.com/sensepost/objection" target="_blank" rel="noopener" class="text-xs text-teal-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 GitHub: sensepost/objection
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-teal-300">
+                <code>pip install objection</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-teal-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>objection --g com.target.app explore</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-teal-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Play Integrity -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="dynamic">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">Play Integrity Fix</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-teal-500/10 text-teal-400 border border-teal-500/20">INTEGRITY BYPASS</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Magisk module to spoof device fingerprint properties and pass Play Integrity API attestations.</p>
+              <a href="https://github.com/chiteroman/PlayIntegrityFix" target="_blank" rel="noopener" class="text-xs text-teal-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 GitHub: chiteroman/PlayIntegrityFix
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-teal-300">
+                <code>magisk --install-module PlayIntegrityFix.zip</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-teal-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>reboot via Magisk UI</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-teal-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Burp Suite -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="network">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">Burp Suite</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">HTTP PROXY</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Core web proxy for inspecting, tampering with, and fuzzing REST/GraphQL API traffic.</p>
+              <a href="https://portswigger.net/burp" target="_blank" rel="noopener" class="text-xs text-cyan-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 Site: PortSwigger Burp
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">CERT COMMAND</div>
+              <div class="flex items-center justify-between text-cyan-300">
+                <code>adb push burp_cert.der /sdcard/</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-cyan-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>burpsuite</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-cyan-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- mitmproxy -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="network">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">mitmproxy</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">CLI PROXY</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Interactive scriptable CLI HTTP/HTTPS proxy with Python scripting capabilities.</p>
+              <a href="https://mitmproxy.org/" target="_blank" rel="noopener" class="text-xs text-cyan-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 Site: mitmproxy.org
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-cyan-300">
+                <code>pip install mitmproxy</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-cyan-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>mitmweb --web-port 8081</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-cyan-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Drozer -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-violet-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="ipc">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">Drozer</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-violet-500/10 text-violet-400 border border-violet-500/20">IPC AUDITOR</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Security framework for enumerating exported components, ContentProviders, and services.</p>
+              <a href="https://github.com/WithSecureLabs/drozer" target="_blank" rel="noopener" class="text-xs text-violet-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 GitHub: WithSecureLabs/drozer
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-violet-300">
+                <code>pip install drozer</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-violet-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>drozer console connect</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-violet-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ADB -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-violet-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="ipc">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">ADB</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-violet-500/10 text-violet-400 border border-violet-500/20">PLATFORM TOOL</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Android Debug Bridge — pull data, launch activities, and monitor device logcat logs.</p>
+              <a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener" class="text-xs text-violet-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 Docs: Android adb
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-violet-300">
+                <code>sudo apt install adb</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-violet-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>adb shell am start -n com.target.app/.MainActivity</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-violet-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ghidra -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-purple-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="reverse">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">Ghidra</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-500/10 text-purple-400 border border-purple-500/20">NATIVE DECOMPILER</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Software reverse engineering framework for analyzing native ARM `.so` shared libraries.</p>
+              <a href="https://ghidra-sre.org/" target="_blank" rel="noopener" class="text-xs text-purple-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 Site: ghidra-sre.org
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-purple-300">
+                <code>sudo apt install ghidra</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-purple-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>ghidra Run</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-purple-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- radare2 -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-purple-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="reverse">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">radare2 &amp; r2frida</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-500/10 text-purple-400 border border-purple-500/20">CLI DISASSEMBLER</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Command-line binary reversing framework. Bridges with Frida for live native inspection.</p>
+              <a href="https://github.com/radareorg/radare2" target="_blank" rel="noopener" class="text-xs text-purple-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 GitHub: radareorg/radare2
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-purple-300">
+                <code>sudo apt install radare2 &amp;&amp; pip install r2frida</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-purple-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>r2 frida://usb//com.target.app</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-purple-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- scrcpy -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="utility">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">scrcpy</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">DISPLAY MIRROR</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Mirror and control physical Android devices from your desktop over USB or TCP/IP.</p>
+              <a href="https://github.com/Genymobile/scrcpy" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 GitHub: Genymobile/scrcpy
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-emerald-300">
+                <code>sudo apt install scrcpy</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>scrcpy --max-fps 60</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- apksigner / zipalign -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="utility">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">apksigner &amp; zipalign</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">APK SIGNING</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Re-align zip offsets and sign patched APK binaries with custom debug keystores prior to installation.</p>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-emerald-300">
+                <code>sudo apt install zipalign apksigner</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>apksigner sign --ks debug.keystore out.apk</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-emerald-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- blutter -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="reverse">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">blutter</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-teal-500/10 text-teal-400 border border-teal-500/20">FLUTTER REVERSING</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Flutter App Reverse Engineering Tool — reconstructs Dart classes and offsets from native `libapp.so` binaries.</p>
+              <a href="https://github.com/Dutyos/blutter" target="_blank" rel="noopener" class="text-xs text-teal-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 GitHub: Dutyos/blutter
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-teal-300">
+                <code>git clone https://github.com/Dutyos/blutter.git</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-teal-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>python blutter.py ./extracted_arm64 ./out</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-teal-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- reFlutter -->
+          <div class="tool-card p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/40 transition-all flex flex-col justify-between space-y-4" data-cat="reverse">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-100 text-base">reFlutter</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-teal-500/10 text-teal-400 border border-teal-500/20">FLUTTER PATCHER</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Patches compiled Flutter binaries to force HTTP traffic through proxy servers and bypass custom socket SSL pinning.</p>
+              <a href="https://github.com/Impact-I/reFlutter" target="_blank" rel="noopener" class="text-xs text-teal-400 hover:underline font-mono inline-flex items-center gap-1">
+                🔗 GitHub: Impact-I/reFlutter
+              </a>
+            </div>
+            <div class="space-y-2 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs">
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">INSTALL COMMAND</div>
+              <div class="flex items-center justify-between text-teal-300">
+                <code>pip install reflutter</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-teal-400">Copy</button>
+              </div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold pt-1 border-t border-slate-900">RUN COMMAND</div>
+              <div class="flex items-center justify-between text-slate-300">
+                <code>reflutter target.apk</code>
+                <button class="copy-btn text-[10px] text-slate-400 hover:text-teal-400">Copy</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- TESTING ROADMAP SECTION -->
+      <section id="roadmap" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
+        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
+          <span class="w-2 h-0.5 bg-emerald-400"></span> 03 &bull; Methodology
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-100 tracking-tight mb-4">Step-by-Step Testing Roadmap</h2>
+        <p class="text-slate-400 text-sm max-w-3xl mb-12">Execute these stages in sequence. Each phase yields target data for the subsequent step.</p>
+
+        <div class="space-y-4">
+          
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <span class="font-mono text-2xl font-black text-emerald-400">01</span>
+            <div class="space-y-2 flex-1">
+              <h3 class="text-base font-bold text-slate-100">Target Reconnaissance &amp; Fingerprinting</h3>
+              <p class="text-slate-400 text-xs leading-relaxed">Determine package ID, version codes, target SDK, and architecture (Native, React Native, Flutter, Cordova).</p>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-emerald-300">
+                <code>apkid target.apk</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <span class="font-mono text-2xl font-black text-emerald-400">02</span>
+            <div class="space-y-2 flex-1">
+              <h3 class="text-base font-bold text-slate-100">Static Review &amp; Decompilation</h3>
+              <p class="text-slate-400 text-xs leading-relaxed">Decompile with JADX, audit `AndroidManifest.xml` for exported components, grep for API keys/tokens, and check `network_security_config.xml`.</p>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-emerald-300">
+                <code>apkleaks -f target.apk &amp;&amp; jadx-gui target.apk</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <span class="font-mono text-2xl font-black text-emerald-400">03</span>
+            <div class="space-y-2 flex-1">
+              <h3 class="text-base font-bold text-slate-100">Dynamic Environment &amp; Proxy Setup</h3>
+              <p class="text-slate-400 text-xs leading-relaxed">Install target APK onto test lab, execute `frida-server`, push Burp CA certificate into system trust store, and confirm proxy traffic.</p>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-emerald-300">
+                <code>adb push frida-server /data/local/tmp/ &amp;&amp; adb shell "chmod 755 /data/local/tmp/frida-server &amp;&amp; /data/local/tmp/frida-server &amp;"</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <span class="font-mono text-2xl font-black text-emerald-400">04</span>
+            <div class="space-y-2 flex-1">
+              <h3 class="text-base font-bold text-slate-100">Bypass SSL Pinning &amp; Protections</h3>
+              <p class="text-slate-400 text-xs leading-relaxed">Execute Objection/Frida hooks to unpin SSL certificates, bypass root checks, and spoof Play Integrity attestations.</p>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-emerald-300">
+                <code>objection --g com.target.app explore -s "android sslpinning disable"</code>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 05 with Subsections -->
+          <div class="p-6 rounded-2xl bg-slate-900/90 border border-emerald-500/30 space-y-4">
+            <div class="flex items-start gap-4">
+              <span class="font-mono text-2xl font-black text-emerald-400">05</span>
+              <div class="space-y-2 flex-1">
+                <h3 class="text-base font-bold text-slate-100">API Mapping &amp; Endpoint Assessment</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">Interact with every screen while Burp captures traffic. Map endpoints for IDOR, BOLA, mass assignment, and auth flaws.</p>
+              </div>
+            </div>
+
+            <!-- Deep Dive Subsections -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <div class="text-xs font-mono font-bold text-emerald-400">⚡ GRAPHQL ASSESSMENT</div>
+                <ul class="text-xs text-slate-300 space-y-1 list-disc pl-4">
+                  <li>Query Introspection (<code class="text-emerald-300 font-mono">__schema</code>) to dump models.</li>
+                  <li>Query Batching &amp; Depth Limits for DoS testing.</li>
+                  <li>Mutation Object-Level Authorization (IDOR).</li>
+                </ul>
+              </div>
+
+              <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <div class="text-xs font-mono font-bold text-amber-400">🔥 RATE-LIMIT &amp; OTP TESTING</div>
+                <ul class="text-xs text-slate-300 space-y-1 list-disc pl-4">
+                  <li>SMS/Email OTP rate-limits &amp; IP rotation bypasses.</li>
+                  <li>Response manipulation: flip status booleans in Burp.</li>
+                  <li>Weak token generation &amp; timestamp seeds.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <span class="font-mono text-2xl font-black text-emerald-400">06</span>
+            <div class="space-y-2 flex-1">
+              <h3 class="text-base font-bold text-slate-100">Component Attack Pass (Drozer &amp; Intents)</h3>
+              <p class="text-slate-400 text-xs leading-relaxed">Use Drozer to query exported activities, content providers, broadcast receivers, and services without permission checks.</p>
+            </div>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <span class="font-mono text-2xl font-black text-emerald-400">07</span>
+            <div class="space-y-2 flex-1">
+              <h3 class="text-base font-bold text-slate-100">Storage &amp; WebView Audit</h3>
+              <p class="text-slate-400 text-xs leading-relaxed">Inspect SharedPreferences, SQLite DBs, and WebViews configured with enabled JavaScript or JS interfaces.</p>
+            </div>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <span class="font-mono text-2xl font-black text-emerald-400">08</span>
+            <div class="space-y-2 flex-1">
+              <h3 class="text-base font-bold text-slate-100">Native Binary Reversing (`.so` Shared Libraries)</h3>
+              <p class="text-slate-400 text-xs leading-relaxed">Decompile ARM native `.so` libraries in Ghidra to analyze JNI exports, obfuscated cryptographic routines, or license validations.</p>
+            </div>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <span class="font-mono text-2xl font-black text-emerald-400">09</span>
+            <div class="space-y-2 flex-1">
+              <h3 class="text-base font-bold text-slate-100">Documentation &amp; Reporting</h3>
+              <p class="text-slate-400 text-xs leading-relaxed">Structure reproduction steps, attach PoC captures, clearly define business impact, and suggest remediation.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- FRAMEWORK-SPECIFIC REVERSING SECTION -->
+      <section id="frameworks" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
+        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
+          <span class="w-2 h-0.5 bg-emerald-400"></span> Specialized Pipelines
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-100 tracking-tight mb-4">Framework-Specific Testing</h2>
+        <p class="text-slate-400 text-sm max-w-3xl mb-10">Standard Java/Kotlin decompilation with JADX fails on non-native frameworks. Use framework-tailored workflows.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/30 transition-all flex flex-col justify-between space-y-4">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-slate-100 text-base">React Native</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">JavaScript</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed">Logic lives inside bundled JavaScript files (`index.android.bundle`) rather than DEX bytecode.</p>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs space-y-2 font-mono">
+                <div class="text-emerald-400 font-bold text-[10px]">DECOMPILE STEPS:</div>
+                <ol class="list-decimal pl-4 text-slate-300 space-y-1">
+                  <li>Unpack: <code class="text-slate-100">apktool d app.apk</code></li>
+                  <li>Extract <code class="text-slate-100">assets/index.android.bundle</code></li>
+                  <li>If Hermes, decompile with <code class="text-slate-100">hermes-dec</code></li>
+                  <li>Beautify: <code class="text-slate-100">npx js-beautify</code></li>
+                </ol>
+              </div>
+            </div>
+            <a href="https://github.com/P1sec/hermes-dec" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono">
+              Get hermes-dec &rarr;
+            </a>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/30 transition-all flex flex-col justify-between space-y-4">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-slate-100 text-base">Flutter (Dart)</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-teal-500/10 text-teal-400 border border-teal-500/20">Dart AOT</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed">Flutter compiles Dart into native ahead-of-time binaries (`libapp.so`). JADX cannot read Dart code.</p>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs space-y-2 font-mono">
+                <div class="text-teal-400 font-bold text-[10px]">DECOMPILE STEPS:</div>
+                <ol class="list-decimal pl-4 text-slate-300 space-y-1">
+                  <li>Extract <code class="text-slate-100">lib/arm64-v8a/libapp.so</code></li>
+                  <li>Use <strong>blutter</strong> to restore Dart classes</li>
+                  <li>Patch SSL: <code class="text-slate-100">reflutter app.apk</code></li>
+                  <li>Load generated symbols into Ghidra</li>
+                </ol>
+              </div>
+            </div>
+            <a href="https://github.com/Dutyos/blutter" target="_blank" rel="noopener" class="text-xs text-teal-400 hover:underline font-mono">
+              Get blutter &amp; reFlutter &rarr;
+            </a>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/30 transition-all flex flex-col justify-between space-y-4">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-slate-100 text-base">Cordova</h3>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">HTML5 Container</span>
+              </div>
+              <p class="text-slate-400 text-xs leading-relaxed">Hybrid container wrapping HTML5 web assets communicating via native plugin bridges.</p>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs space-y-2 font-mono">
+                <div class="text-emerald-400 font-bold text-[10px]">DECOMPILE STEPS:</div>
+                <ol class="list-decimal pl-4 text-slate-300 space-y-1">
+                  <li>Unpack APK with <code class="text-slate-100">apktool d</code></li>
+                  <li>Inspect web assets in <code class="text-slate-100">assets/www/</code></li>
+                  <li>Review domain rules in <code class="text-slate-100">config.xml</code></li>
+                  <li>Audit plugins in <code class="text-slate-100">assets/www/plugins/</code></li>
+                </ol>
+              </div>
+            </div>
+            <a href="https://cordova.apache.org/" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono">
+              Cordova Documentation &rarr;
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- AUDIT CHECKLIST SECTION -->
+      <section id="vulns" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+          <div>
+            <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
+              <span class="w-2 h-0.5 bg-emerald-400"></span> Vulnerability Checklist
+            </div>
+            <h2 class="text-3xl font-extrabold text-slate-100 tracking-tight">Interactive Audit Checklist</h2>
+            <p class="text-slate-400 text-sm mt-2">Track findings as you test. Selections save automatically in browser local storage.</p>
+          </div>
+        </div>
+
+        <div class="space-y-3" id="vulnList">
+          <div class="vitem p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <input type="checkbox" id="v1" class="mt-1 w-5 h-5 rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500/20 cursor-pointer">
+            <label for="v1" class="flex-1 cursor-pointer">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-100 text-sm">Exported components without permission checks</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-rose-500/10 text-rose-400 border border-rose-500/20">HIGH</span>
+              </div>
+              <p class="text-slate-400 text-xs">Activities, services, providers, or receivers exported (`android:exported="true"`) without matching permission requirements.</p>
+            </label>
+          </div>
+
+          <div class="vitem p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <input type="checkbox" id="v2" class="mt-1 w-5 h-5 rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500/20 cursor-pointer">
+            <label for="v2" class="flex-1 cursor-pointer">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-100 text-sm">Insecure local data storage</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-rose-500/10 text-rose-400 border border-rose-500/20">HIGH</span>
+              </div>
+              <p class="text-slate-400 text-xs">Credentials or tokens in plaintext SharedPreferences, unencrypted SQLite databases, or world-readable files under `/data/data`.</p>
+            </label>
+          </div>
+
+          <div class="vitem p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <input type="checkbox" id="v3" class="mt-1 w-5 h-5 rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500/20 cursor-pointer">
+            <label for="v3" class="flex-1 cursor-pointer">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-100 text-sm">WebView JS interface abuse (`addJavascriptInterface`)</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-rose-500/10 text-rose-400 border border-rose-500/20">HIGH</span>
+              </div>
+              <p class="text-slate-400 text-xs">`addJavascriptInterface` exposed to a WebView loading attacker-controlled URLs, leading to remote code execution.</p>
+            </label>
+          </div>
+
+          <div class="vitem p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <input type="checkbox" id="v4" class="mt-1 w-5 h-5 rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500/20 cursor-pointer">
+            <label for="v4" class="flex-1 cursor-pointer">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-100 text-sm">Bypassable SSL certificate pinning</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/20">MEDIUM</span>
+              </div>
+              <p class="text-slate-400 text-xs">Pinning implemented but defeatable with a generic Frida/Objection script — flag if protecting sensitive endpoints.</p>
+            </label>
+          </div>
+
+          <div class="vitem p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <input type="checkbox" id="v5" class="mt-1 w-5 h-5 rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500/20 cursor-pointer">
+            <label for="v5" class="flex-1 cursor-pointer">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-100 text-sm">Insecure deep links &amp; intent redirection</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/20">MEDIUM</span>
+              </div>
+              <p class="text-slate-400 text-xs">Deep links accepting untrusted URI parameters that forward data directly into internal intents without validation.</p>
+            </label>
+          </div>
+
+          <div class="vitem p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <input type="checkbox" id="v6" class="mt-1 w-5 h-5 rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500/20 cursor-pointer">
+            <label for="v6" class="flex-1 cursor-pointer">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-100 text-sm">Production `allowBackup` / `debuggable` flags</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/20">MEDIUM</span>
+              </div>
+              <p class="text-slate-400 text-xs">Production build compiled with `android:allowBackup="true"` or `android:debuggable="true"`, enabling ADB data backup extraction.</p>
+            </label>
+          </div>
+
+          <div class="vitem p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <input type="checkbox" id="v7" class="mt-1 w-5 h-5 rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500/20 cursor-pointer">
+            <label for="v7" class="flex-1 cursor-pointer">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-100 text-sm">Hardcoded secrets &amp; API credentials</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-rose-500/10 text-rose-400 border border-rose-500/20">HIGH</span>
+              </div>
+              <p class="text-slate-400 text-xs">API keys, signing secrets, or internal staging tokens embedded in `strings.xml` or decompiled smali sources.</p>
+            </label>
+          </div>
+
+          <div class="vitem p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <input type="checkbox" id="v8" class="mt-1 w-5 h-5 rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500/20 cursor-pointer">
+            <label for="v8" class="flex-1 cursor-pointer">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-100 text-sm">Firebase / cloud database misconfigurations</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-rose-500/10 text-rose-400 border border-rose-500/20">HIGH</span>
+              </div>
+              <p class="text-slate-400 text-xs">Realtime Database or Firestore instances left open without authentication rules using config strings pulled from the APK.</p>
+            </label>
+          </div>
+
+          <div class="vitem p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <input type="checkbox" id="v9" class="mt-1 w-5 h-5 rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500/20 cursor-pointer">
+            <label for="v9" class="flex-1 cursor-pointer">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-100 text-sm">Broken API authorization (IDOR / BOLA)</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-rose-500/10 text-rose-400 border border-rose-500/20">HIGH</span>
+              </div>
+              <p class="text-slate-400 text-xs">Endpoints captured via Burp that fail to verify the authenticated user owns the requested resource ID.</p>
+            </label>
+          </div>
+
+          <div class="vitem p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <input type="checkbox" id="v10" class="mt-1 w-5 h-5 rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500/20 cursor-pointer">
+            <label for="v10" class="flex-1 cursor-pointer">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-100 text-sm">Tapjacking &amp; overlay abuse</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">LOW</span>
+              </div>
+              <p class="text-slate-400 text-xs">Sensitive input views lacking `filterTouchesWhenObscured`, allowing malicious background apps to capture tap events.</p>
+            </label>
+          </div>
+
+          <div class="vitem p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <input type="checkbox" id="v11" class="mt-1 w-5 h-5 rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500/20 cursor-pointer">
+            <label for="v11" class="flex-1 cursor-pointer">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-100 text-sm">Task hijacking (StrandHogg)</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/20">MEDIUM</span>
+              </div>
+              <p class="text-slate-400 text-xs">Misconfigured `taskAffinity` or `launchMode` flags that allow rogue applications to insert fake activities into the task stack.</p>
+            </label>
+          </div>
+
+          <div class="vitem p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
+            <input type="checkbox" id="v12" class="mt-1 w-5 h-5 rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500/20 cursor-pointer">
+            <label for="v12" class="flex-1 cursor-pointer">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-slate-100 text-sm">Clipboard data leakage</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">LOW</span>
+              </div>
+              <p class="text-slate-400 text-xs">Sensitive verification tokens or OTPs copied directly to system clipboard, readable by other apps pre-Android 13.</p>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRACTICE TARGETS SECTION -->
+      <section id="targets" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
+        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
+          <span class="w-2 h-0.5 bg-emerald-400"></span> Practice Labs
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-100 tracking-tight mb-4">Deliberately Vulnerable Practice Targets</h2>
+        <p class="text-slate-400 text-sm max-w-3xl mb-10">Sharpen security skills legally on vulnerable training applications prior to testing live bounty programs.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4">
+            <div>
+              <h3 class="font-bold text-slate-100 text-base mb-2">InsecureBankv2</h3>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Vulnerable mobile banking app. Teaches IPC bugs, plaintext storage, hardcoded symmetric keys, and custom SSL pinning bypass.</p>
+            </div>
+            <a href="https://github.com/dweinstein/insecurebankv2" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono">
+              GitHub: dweinstein/insecurebankv2 &rarr;
+            </a>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4">
+            <div>
+              <h3 class="font-bold text-slate-100 text-base mb-2">DIVA</h3>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Damn Insecure Vulnerable App. Covers storage flaws, hardcoded secrets, access control bypasses, and SQLite injection.</p>
+            </div>
+            <a href="https://github.com/payatu/diva" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono">
+              GitHub: payatu/diva &rarr;
+            </a>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4">
+            <div>
+              <h3 class="font-bold text-slate-100 text-base mb-2">Sieve</h3>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">Vulnerable password manager app. Teaches exported service exploitation, ContentProvider path traversal, and key derivation bugs.</p>
+            </div>
+            <a href="https://github.com/mwrlabs/sieve" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono">
+              GitHub: mwrlabs/sieve &rarr;
+            </a>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4">
+            <div>
+              <h3 class="font-bold text-slate-100 text-base mb-2">GoatDroid</h3>
+              <p class="text-slate-400 text-xs leading-relaxed mb-3">OWASP training platform. Covers web service integration flaws, side-channel leaks, and mobile auth bypasses.</p>
+            </div>
+            <a href="https://github.com/OWASP/GoatDroid-Project" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline font-mono">
+              GitHub: OWASP GoatDroid &rarr;
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ADVANCED CHEAT SHEETS & NATIVE MEMORY HOOKING SECTION -->
+      <section id="advanced" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
+        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
+          <span class="w-2 h-0.5 bg-emerald-400"></span> Level Up
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-100 tracking-tight mb-4">Advanced Track &amp; Native Memory Hooks</h2>
+        <p class="text-slate-400 text-sm max-w-3xl mb-10">Essential Objection command reference, custom Frida hooks, and native memory patching.</p>
+
+        <div class="space-y-4">
+          
+          <details class="adv group bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition-all">
+            <summary class="flex items-center justify-between p-6 text-slate-100 font-bold text-base cursor-pointer select-none">
+              <span class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                Objection Command Cheat Sheet (SSL, Root, Keystore, Clipboard)
+              </span>
+              <span class="text-emerald-400 transform group-open:rotate-180 transition-transform font-mono text-sm">&darr;</span>
+            </summary>
+            <div class="px-6 pb-6 text-xs sm:text-sm text-slate-300 space-y-3 border-t border-slate-800/60 pt-4 font-mono">
+              <pre class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-emerald-300 overflow-x-auto"># Explore &amp; Connect to Target
+objection --g "com.target.app" explore
+
+# SSL Certificate Pinning Bypass
+android sslpinning disable
+
+# Root Detection Bypass
+android root disable
+
+# Keystore Dump
+android keystore list
+
+# Clipboard Monitor
+android clipboard monitor</pre>
+            </div>
+          </details>
+
+          <details class="adv group bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition-all">
+            <summary class="flex items-center justify-between p-6 text-slate-100 font-bold text-base cursor-pointer select-none">
+              <span class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                Custom Frida Script Template (Java Method Overriding)
+              </span>
+              <span class="text-emerald-400 transform group-open:rotate-180 transition-transform font-mono text-sm">&darr;</span>
+            </summary>
+            <div class="px-6 pb-6 text-xs sm:text-sm text-slate-300 space-y-3 border-t border-slate-800/60 pt-4 font-mono">
+              <pre class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-emerald-300 overflow-x-auto">Java.perform(function () {
+  var CertPinner = Java.use('com.target.security.CertPinner');
+  CertPinner.verify.implementation = function (chain) {
+    console.log('[+] Custom SSL Pinning Check Bypassed Successfully');
+    return true;
+  };
+});</pre>
+            </div>
+          </details>
+
+          <!-- NATIVE ARM64 MEMORY PATCHING CHEAT SHEET -->
+          <details class="adv group bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition-all">
+            <summary class="flex items-center justify-between p-6 text-slate-100 font-bold text-base cursor-pointer select-none">
+              <span class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                Native ARM64 Memory Patching Snippets (`Memory.protect`)
+              </span>
+              <span class="text-cyan-400 transform group-open:rotate-180 transition-transform font-mono text-sm">&darr;</span>
+            </summary>
+            <div class="px-6 pb-6 text-xs sm:text-sm text-slate-300 space-y-3 border-t border-slate-800/60 pt-4 font-mono">
+              <pre class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-cyan-300 overflow-x-auto">// Patch native ARM64 memory instructions dynamically
+var baseAddr = Module.findBaseAddress("libnative.so");
+var targetOffset = baseAddr.add(0x1234);
+
+// Grant Read/Write/Execute permissions to target memory page
+Memory.protect(targetOffset, 4, 'rwx');
+
+// Overwrite instruction at memory address with RET (0xc0035fd6 in ARM64)
+targetOffset.writeByteArray([0xd6, 0x5f, 0x03, 0xc0]);
+console.log('[+] Native ARM64 memory instruction patched with RET!');</pre>
+            </div>
+          </details>
+
+          <details class="adv group bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition-all">
+            <summary class="flex items-center justify-between p-6 text-slate-100 font-bold text-base cursor-pointer select-none">
+              <span class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-teal-400"></span>
+                Drozer Content Provider Fuzzing &amp; Path Traversal
+              </span>
+              <span class="text-teal-400 transform group-open:rotate-180 transition-transform font-mono text-sm">&darr;</span>
+            </summary>
+            <div class="px-6 pb-6 text-xs sm:text-sm text-slate-300 space-y-3 border-t border-slate-800/60 pt-4 font-mono">
+              <pre class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-teal-300 overflow-x-auto">dz> run app.provider.info -a com.target.app
+dz> run app.provider.query content://com.target.app.provider/users --projection "* FROM sqlite_master--"
+dz> run app.provider.download content://com.target.app.provider/files/../../../data/data/com.target.app/databases/app.db</pre>
+            </div>
+          </details>
+
+        </div>
+      </section>
+
+      <!-- REPORT GENERATOR STUDIO SECTION -->
+      <section id="report" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
+        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
+          <span class="w-2 h-0.5 bg-emerald-400"></span> Submission Studio
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-100 tracking-tight mb-4">Vulnerability Report Generator</h2>
+        <p class="text-slate-400 text-sm max-w-3xl mb-8">Generate standard Markdown vulnerability reports ready for submission.</p>
+
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 relative shadow-2xl">
+          <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-800">
+            <div class="text-xs font-mono text-emerald-400 font-bold">MARKDOWN REPORT TEMPLATE</div>
+            <button id="copyReportBtn" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-all shadow-md shadow-emerald-500/20 flex items-center gap-1.5">
+              <span>Copy Template</span>
+            </button>
+          </div>
+
+          <pre id="reportTemplateText" class="font-mono text-xs sm:text-sm text-slate-300 leading-relaxed overflow-x-auto p-4 bg-slate-950 rounded-xl border border-slate-800/80">
+<strong class="text-emerald-400"># [Component] &mdash; [Vulnerability Class] leading to [Impact]</strong>
+
+<strong class="text-emerald-400">## Target Information</strong>
+- **Package ID:** `com.target.app`
+- **Tested Version:** 2.4.1 (Build 10842)
+- **Vulnerable Component:** `com.target.app.AuthActivity`
+
+<strong class="text-emerald-400">## Summary</strong>
+A brief summary explaining the root vulnerability and overall impact.
+
+<strong class="text-emerald-400">## Steps to Reproduce</strong>
+1. Launch target application on rooted test environment.
+2. Execute ADB command to trigger exported activity:
+   `adb shell am start -n com.target.app/.AuthActivity`
+3. Observe direct authorization bypass to internal dashboard without auth tokens.
+
+<strong class="text-emerald-400">## Proof of Concept</strong>
+[Attach video recording or screenshot]
+
+<strong class="text-emerald-400">## Business Impact</strong>
+Allows local apps on device to bypass authentication filters and extract user session data.
+
+<strong class="text-emerald-400">## Suggested Remediation</strong>
+Remove `android:exported="true"` or declare signature-level permission checks in `AndroidManifest.xml`.
+          </pre>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="py-10 px-6 sm:px-12 bg-[#070a12] border-t border-slate-800/80 text-xs text-slate-500">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <span class="font-bold text-slate-300 font-mono">ANDROID BUG HUNTER'S HANDBOOK v3.5 MASTER EDITION</span> &bull; Ethical Security Research &amp; Penetration Testing
+          </div>
+          <div class="font-mono text-slate-400">
+            Recon &rarr; Static &rarr; Dynamic &rarr; Reverse &rarr; Report
+          </div>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
