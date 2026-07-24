@@ -1489,18 +1489,101 @@ console.log('[+] Native ARM64 memory instruction patched with RET!');</pre>
             </div>
           </details>
 
+          <!-- DROZER FULL COMMAND MASTER SHEET -->
           <details class="adv group bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition-all">
             <summary class="flex items-center justify-between p-6 text-slate-100 font-bold text-base cursor-pointer select-none">
               <span class="flex items-center gap-3">
-                <span class="w-2.5 h-2.5 rounded-full bg-teal-400"></span>
-                Drozer Content Provider Fuzzing &amp; Path Traversal
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                Drozer Full Command Master Sheet (50+ Commands)
               </span>
-              <span class="text-teal-400 transform group-open:rotate-180 transition-transform font-mono text-sm">&darr;</span>
+              <span class="text-emerald-400 transform group-open:rotate-180 transition-transform font-mono text-sm">&darr;</span>
             </summary>
-            <div class="px-6 pb-6 text-xs sm:text-sm text-slate-300 space-y-3 border-t border-slate-800/60 pt-4 font-mono">
-              <pre class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-teal-300 overflow-x-auto">dz> run app.provider.info -a com.target.app
-dz> run app.provider.query content://com.target.app.provider/users --projection "* FROM sqlite_master--"
-dz> run app.provider.download content://com.target.app.provider/files/../../../data/data/com.target.app/databases/app.db</pre>
+            <div class="px-6 pb-6 text-xs text-slate-300 space-y-4 border-t border-slate-800/60 pt-4 font-mono">
+              <p class="text-slate-400 text-xs">Complete reference of all Drozer modules for package info, component scans, intent exploitation, and content provider injection.</p>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse border border-slate-800 text-xs">
+                  <thead>
+                    <tr class="bg-slate-950 text-emerald-400 border-b border-slate-800">
+                      <th class="p-2.5 border-r border-slate-800 font-bold">Command</th>
+                      <th class="p-2.5 border-r border-slate-800 font-bold">Description</th>
+                      <th class="p-2.5 font-bold">Example / Usage</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-800/60 bg-slate-950/60">
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">help / list</td><td class="p-2.5 border-r border-slate-800">Show help menu or list available modules</td><td class="p-2.5 text-emerald-300">dz> list</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run app.package.list</td><td class="p-2.5 border-r border-slate-800">List installed packages</td><td class="p-2.5 text-emerald-300">run app.package.list</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run app.package.attacksurface</td><td class="p-2.5 border-r border-slate-800">Show attack surface (exported components)</td><td class="p-2.5 text-emerald-300">run app.package.attacksurface -a com.example.app</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run app.package.info / dump</td><td class="p-2.5 border-r border-slate-800">Show detailed info or dump manifest</td><td class="p-2.5 text-emerald-300">run app.package.info -a com.example.app</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run app.activity.info</td><td class="p-2.5 border-r border-slate-800">List activities of target application</td><td class="p-2.5 text-emerald-300">run app.activity.info -a com.example.app</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run app.provider.info</td><td class="p-2.5 border-r border-slate-800">List content providers</td><td class="p-2.5 text-emerald-300">run app.provider.info -a com.example.app</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run app.service.info</td><td class="p-2.5 border-r border-slate-800">List services</td><td class="p-2.5 text-emerald-300">run app.service.info -a com.example.app</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run app.broadcast.info</td><td class="p-2.5 border-r border-slate-800">List broadcast receivers</td><td class="p-2.5 text-emerald-300">run app.broadcast.info -a com.example.app</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run app.activity.start</td><td class="p-2.5 border-r border-slate-800">Start a specific activity directly</td><td class="p-2.5 text-emerald-300">run app.activity.start -a com.example.app -n .MainActivity</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run scanner.provider.injection</td><td class="p-2.5 border-r border-slate-800">Scan for SQL injection in ContentProviders</td><td class="p-2.5 text-emerald-300">run scanner.provider.injection -a com.example.app</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run scanner.provider.access</td><td class="p-2.5 border-r border-slate-800">Check content provider access issues</td><td class="p-2.5 text-emerald-300">run scanner.provider.access -a com.example.app</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run scanner.misc.debuggable</td><td class="p-2.5 border-r border-slate-800">Check if app is debuggable</td><td class="p-2.5 text-emerald-300">run scanner.misc.debuggable -a com.example.app</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run scanner.misc.exportedcomponents</td><td class="p-2.5 border-r border-slate-800">Scan for all exported components</td><td class="p-2.5 text-emerald-300">run scanner.misc.exportedcomponents -a com.example.app</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run scanner.permissions.findleaks</td><td class="p-2.5 border-r border-slate-800">Find permission leaks</td><td class="p-2.5 text-emerald-300">run scanner.permissions.findleaks -a com.example.app</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run exploit.provider.query / insert</td><td class="p-2.5 border-r border-slate-800">Execute query or insert into ContentProvider</td><td class="p-2.5 text-emerald-300">run exploit.provider.query -a com.example.app</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run exploit.sharedprefs.read / write</td><td class="p-2.5 border-r border-slate-800">Read or tamper with SharedPreferences XML</td><td class="p-2.5 text-emerald-300">run exploit.sharedprefs.read -a com.example.app -p /data/.../config.xml</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run file.download / list</td><td class="p-2.5 border-r border-slate-800">List or download internal app files</td><td class="p-2.5 text-emerald-300">run file.download -p /data/data/com.example.app/databases/db.sqlite</td></tr>
+                    <tr><td class="p-2.5 border-r border-slate-800 font-bold text-slate-200">run scanner.webview.javascript</td><td class="p-2.5 border-r border-slate-800">Detect vulnerable WebView JS interfaces</td><td class="p-2.5 text-emerald-300">run scanner.webview.javascript</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+
+          <!-- BURP CA SYSTEM STORE SETUP CHEAT SHEET -->
+          <details class="adv group bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition-all">
+            <summary class="flex items-center justify-between p-6 text-slate-100 font-bold text-base cursor-pointer select-none">
+              <span class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                Burp Suite System CA Cert Installation &amp; ADB / Frida / Objection Commands
+              </span>
+              <span class="text-cyan-400 transform group-open:rotate-180 transition-transform font-mono text-sm">&darr;</span>
+            </summary>
+            <div class="px-6 pb-6 text-xs text-slate-300 space-y-4 border-t border-slate-800/60 pt-4 font-mono">
+              <div>
+                <div class="text-emerald-400 font-bold mb-2">1. Convert &amp; Push Burp CA Cert to System Trust Store (`/system/etc/security/cacerts/`)</div>
+                <pre class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-emerald-300 overflow-x-auto"># Convert .der to .pem
+openssl x509 -inform DER -in burp.der -out burp.pem
+
+# Get subject hash (e.g. 9a53d94b)
+openssl x509 -inform PEM -subject_hash_old -in burp.pem | head -1
+
+# Rename cert to hash.0 &amp; push to system trust store
+mv burp.pem 9a53d94b.0
+adb root &amp;&amp; adb remount
+adb push 9a53d94b.0 /system/etc/security/cacerts/
+adb shell chmod 644 /system/etc/security/cacerts/9a53d94b.0
+adb reboot</pre>
+              </div>
+
+              <div>
+                <div class="text-teal-400 font-bold mb-2">2. ADB, Frida &amp; Objection Quick Reference</div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left border-collapse border border-slate-800 text-xs">
+                    <thead>
+                      <tr class="bg-slate-950 text-teal-400 border-b border-slate-800">
+                        <th class="p-2 border-r border-slate-800 font-bold">Category</th>
+                        <th class="p-2 border-r border-slate-800 font-bold">Command</th>
+                        <th class="p-2 font-bold">Description</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 bg-slate-950/60">
+                      <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Emulator</td><td class="p-2 border-r border-slate-800 text-emerald-300">emulator -list-avds</td><td class="p-2">List available Android Virtual Devices</td></tr>
+                      <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Emulator</td><td class="p-2 border-r border-slate-800 text-emerald-300">emulator -avd Pixel4_API33 -writable-system -no-snapshot</td><td class="p-2">Start emulator with writable system</td></tr>
+                      <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">MobSF</td><td class="p-2 border-r border-slate-800 text-emerald-300">docker run -it --rm -p 8000:8000 opensecurity/mobile-security-framework-mobsf:latest</td><td class="p-2">Launch MobSF container</td></tr>
+                      <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">ADB</td><td class="p-2 border-r border-slate-800 text-emerald-300">adb shell pm list packages -3</td><td class="p-2">List 3rd-party installed packages</td></tr>
+                      <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Frida</td><td class="p-2 border-r border-slate-800 text-emerald-300">frida-ps -Uia</td><td class="p-2">List running apps on USB device</td></tr>
+                      <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Frida</td><td class="p-2 border-r border-slate-800 text-emerald-300">frida --codeshare masbog/frida-android-unpinning-ssl -f com.target.app -U</td><td class="p-2">Inject SSL unpinning codeshare script</td></tr>
+                      <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Objection</td><td class="p-2 border-r border-slate-800 text-emerald-300">objection -g com.target.app explore</td><td class="p-2">Explore target application</td></tr>
+                      <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Objection</td><td class="p-2 border-r border-slate-800 text-emerald-300">android sslpinning disable &amp;&amp; android root disable</td><td class="p-2">Disable SSL pinning and root checks</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </details>
 

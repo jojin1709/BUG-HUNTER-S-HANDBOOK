@@ -108,6 +108,68 @@ Curated disclosed real-world vulnerability writeups and research blogs to build 
 
 ---
 
+## 🛠️ Drozer Master Command Reference
+
+| Command | Description | Example / Notes |
+| --- | --- | --- |
+| `help` / `list` | Show help menu or list available modules | `dz> list` |
+| `run app.package.list` | List installed packages | `run app.package.list` |
+| `run app.package.attacksurface -a <pkg>` | Show attack surface (exported components) | `run app.package.attacksurface -a com.example.app` |
+| `run app.package.info -a <pkg>` | Show detailed info about a package | `run app.package.info -a com.example.app` |
+| `run app.activity.info -a <pkg>` | List activities of an app | `run app.activity.info -a com.example.app` |
+| `run app.provider.info -a <pkg>` | List content providers | `run app.provider.info -a com.example.app` |
+| `run app.service.info -a <pkg>` | List services | `run app.service.info -a com.example.app` |
+| `run app.broadcast.info -a <pkg>` | List broadcast receivers | `run app.broadcast.info -a com.example.app` |
+| `run app.activity.start -a <pkg> -n <act>` | Start a specific activity | `run app.activity.start -a com.example.app -n MainActivity` |
+| `run scanner.provider.injection -a <pkg>` | Check for SQL injection in content providers | `run scanner.provider.injection -a com.example.app` |
+| `run scanner.provider.access -a <pkg>` | Check for content provider access issues | `run scanner.provider.access -a com.example.app` |
+| `run scanner.misc.debuggable -a <pkg>` | Check if app is debuggable | `run scanner.misc.debuggable -a com.example.app` |
+| `run scanner.misc.exportedcomponents -a <pkg>` | Check for exported components | `run scanner.misc.exportedcomponents -a com.example.app` |
+| `run scanner.permissions.findleaks -a <pkg>` | Find permission leaks | `run scanner.permissions.findleaks -a com.example.app` |
+| `run exploit.reinvokeactivity -a <pkg> -n <act>` | Exploit activity re-invocation | `run exploit.reinvokeactivity -a com.example.app -n MainActivity` |
+| `run exploit.sharedprefs.read -a <pkg> -p <path>` | Read shared preferences file | `run exploit.sharedprefs.read -a com.example.app -p /data/.../config.xml` |
+| `run exploit.sharedprefs.write -a <pkg> -p <path>` | Modify shared preferences | `run exploit.sharedprefs.write -a com.example.app -p /data/.../config.xml -k isAdmin -v true` |
+| `run file.download -p <path>` | Download file from device | `run file.download -p /data/data/com.example.app/databases/db.sqlite` |
+| `run scanner.webview.javascript` | Detect vulnerable WebView JavaScript interfaces | `run scanner.webview.javascript` |
+
+---
+
+## 🔒 Burp Suite System CA Cert & ADB Commands
+
+### Convert & Install Burp Certificate into System Store (`/system/etc/security/cacerts/`)
+
+```bash
+# 1. Convert .der to .pem
+openssl x509 -inform DER -in burp.der -out burp.pem
+
+# 2. Get subject hash (example: abcd1234)
+openssl x509 -inform PEM -subject_hash_old -in burp.pem | head -1
+
+# 3. Rename and push to system trust store
+mv burp.pem abcd1234.0
+adb root && adb remount
+adb push abcd1234.0 /system/etc/security/cacerts/
+adb shell chmod 644 /system/etc/security/cacerts/abcd1234.0
+adb reboot
+```
+
+### Quick Commands Reference
+
+| Category | Command | Description |
+| --- | --- | --- |
+| **Emulator** | `emulator -list-avds` | List available Android Virtual Devices |
+| **Emulator** | `emulator -avd Pixel4_API33 -writable-system -no-snapshot` | Start emulator with writable system |
+| **MobSF** | `docker run -it --rm -p 8000:8000 opensecurity/mobile-security-framework-mobsf:latest` | Start MobSF container |
+| **ADB** | `adb shell pm list packages -3` | List 3rd party packages |
+| **ADB** | `adb shell getprop ro.product.cpu.abi` | Get device CPU architecture |
+| **Frida** | `frida-ps -Uia` | List running apps on USB device |
+| **Frida** | `frida --codeshare masbog/frida-android-unpinning-ssl -f <package> -U` | Inject SSL unpinning script |
+| **Objection** | `objection -g <package> explore` | Explore target app |
+| **Objection** | `android sslpinning disable` | Disable SSL certificate pinning |
+| **Objection** | `android root disable` | Disable root detection |
+
+---
+
 ## Step-by-Step Methodology Roadmap
 
 ```text
