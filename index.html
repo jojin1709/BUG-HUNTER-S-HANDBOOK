@@ -1392,6 +1392,164 @@
         </div>
       </section>
 
+      <!-- RECON SCRIPT STUDIO SECTION -->
+      <section id="script" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
+        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
+          <span class="w-2 h-0.5 bg-emerald-400"></span> Automation Studio
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-100 tracking-tight mb-4">Automated APK Recon Script</h2>
+        <p class="text-slate-400 text-sm max-w-3xl mb-8">Execute `apkid`, `apktool`, `apkleaks`, and `jadx` in a single bash pipeline.</p>
+
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 relative shadow-2xl">
+          <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-800">
+            <div class="text-xs font-mono text-emerald-400 font-bold">RECON.SH SCRIPT</div>
+            <button class="copy-btn px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-all flex items-center gap-1.5">
+              <span>Copy Script</span>
+            </button>
+          </div>
+          <pre class="font-mono text-xs text-slate-300 overflow-x-auto p-4 bg-slate-950 rounded-xl border border-slate-800"><code>#!/usr/bin/env bash
+# recon.sh - Automated Mobile Reconnaissance Pipeline
+if [ -z "$1" ]; then echo "Usage: ./recon.sh &lt;target.apk&gt;"; exit 1; fi
+TARGET="$1"
+OUT_DIR="recon_$(basename "$TARGET" .apk)"
+mkdir -p "$OUT_DIR"
+echo "[+] Step 1: Running APKID Fingerprinting..." &amp;&amp; apkid "$TARGET" &gt; "$OUT_DIR/apkid.txt"
+echo "[+] Step 2: Unpacking Resources with APKTool..." &amp;&amp; apktool d "$TARGET" -o "$OUT_DIR/unpacked" -f
+echo "[+] Step 3: Extracting API Keys &amp; URIs with APKLeaks..." &amp;&amp; apkleaks -f "$TARGET" -o "$OUT_DIR/secrets.txt"
+echo "[+] Step 4: Decompiling DEX to Java with JADX..." &amp;&amp; jadx -d "$OUT_DIR/source" "$TARGET"
+echo "[+] Recon completed! Results saved to $OUT_DIR/"</code></pre>
+        </div>
+      </section>
+
+      <!-- CURATED VIDEO TUTORIALS HUB -->
+      <section id="tutorials" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
+        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
+          <span class="w-2 h-0.5 bg-emerald-400"></span> Video Learning
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-100 tracking-tight mb-4">Curated Video Tutorials Hub</h2>
+        <p class="text-slate-400 text-sm max-w-3xl mb-10">Step-by-step video guides for Android security techniques.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-4">
+            <div>
+              <div class="text-xs font-mono text-emerald-400 font-bold mb-2">FRIDA HOOKING</div>
+              <h3 class="font-bold text-slate-100 text-base mb-2">Frida SSL Pinning Bypass</h3>
+              <p class="text-slate-400 text-xs leading-relaxed mb-4">Learn how to inject custom JavaScript scripts to bypass SSL certificate pinning on Android 13/14.</p>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=frida+android+ssl+pinning+bypass+tutorial" target="_blank" rel="noopener" class="px-4 py-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-bold transition-all text-center flex items-center justify-center gap-2">
+              <span>▶ Search Video Tutorials</span>
+            </a>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-teal-500/40 transition-all flex flex-col justify-between space-y-4">
+            <div>
+              <div class="text-xs font-mono text-teal-400 font-bold mb-2">STATIC ANALYSIS</div>
+              <h3 class="font-bold text-slate-100 text-base mb-2">JADX Decompilation Workflow</h3>
+              <p class="text-slate-400 text-xs leading-relaxed mb-4">Master navigating JADX-GUI, auditing Manifest permissions, and tracing cross-references.</p>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=jadx+gui+android+reverse+engineering+tutorial" target="_blank" rel="noopener" class="px-4 py-2.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/30 text-xs font-mono font-bold transition-all text-center flex items-center justify-center gap-2">
+              <span>▶ Search Video Tutorials</span>
+            </a>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 transition-all flex flex-col justify-between space-y-4">
+            <div>
+              <div class="text-xs font-mono text-cyan-400 font-bold mb-2">NETWORK INTERCEPTION</div>
+              <h3 class="font-bold text-slate-100 text-base mb-2">Burp Suite System CA Setup</h3>
+              <p class="text-slate-400 text-xs leading-relaxed mb-4">Step-by-step guide to installing Burp's CA certificate into `/system/etc/security/cacerts/`.</p>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=burp+suite+android+system+certificate+installation" target="_blank" rel="noopener" class="px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-mono font-bold transition-all text-center flex items-center justify-center gap-2">
+              <span>▶ Search Video Tutorials</span>
+            </a>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-purple-500/40 transition-all flex flex-col justify-between space-y-4">
+            <div>
+              <div class="text-xs font-mono text-purple-400 font-bold mb-2">IPC EXPLOITATION</div>
+              <h3 class="font-bold text-slate-100 text-base mb-2">Drozer Exploitation Guide</h3>
+              <p class="text-slate-400 text-xs leading-relaxed mb-4">Learn how to audit exported components and execute SQL injection via Drozer.</p>
+            </div>
+            <a href="https://www.youtube.com/results?search_query=drozer+android+exploitation+tutorial" target="_blank" rel="noopener" class="px-4 py-2.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30 text-xs font-mono font-bold transition-all text-center flex items-center justify-center gap-2">
+              <span>▶ Search Video Tutorials</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- DEEP LINK FUZZING SECTION -->
+      <section id="deeplinks" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
+        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
+          <span class="w-2 h-0.5 bg-emerald-400"></span> Intent Injection
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-100 tracking-tight mb-4">Deep Link &amp; Custom Scheme Fuzzing</h2>
+        <p class="text-slate-400 text-sm max-w-3xl mb-8">Extract deep link schemes from `AndroidManifest.xml` and trigger intent redirection vulnerabilities using ADB.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 font-mono text-xs">
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
+            <div class="text-emerald-400 font-bold text-sm">1. Extract Deep Link Schemes</div>
+            <p class="text-slate-400 text-xs font-sans">Audit manifest for `<data android:scheme="..." android:host="..." />` tags.</p>
+            <pre class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-emerald-300 overflow-x-auto">adb shell dumpsys package com.target.app | grep -E "scheme|host"</pre>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
+            <div class="text-teal-400 font-bold text-sm">2. Trigger ADB Intent Launch</div>
+            <p class="text-slate-400 text-xs font-sans">Simulate deep link triggers to test input validation and WebView URL redirects.</p>
+            <pre class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-teal-300 overflow-x-auto">adb shell am start -W -a android.intent.action.VIEW -d "appscheme://auth?url=https://attacker.com"</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- BOUNTY & CVSS CALCULATOR SECTION -->
+      <section id="cvss" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
+        <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
+          <span class="w-2 h-0.5 bg-emerald-400"></span> Estimator
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-100 tracking-tight mb-4">Interactive CVSS v3.1 &amp; Bounty Estimator</h2>
+        <p class="text-slate-400 text-sm max-w-3xl mb-8">Calculate CVSS v3.1 severity scores, vector strings, and estimated bounty payout ranges for Android vulnerabilities.</p>
+
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-xs font-mono text-slate-400 uppercase font-bold mb-2">Select Vulnerability Class</label>
+              <select id="cvssVulnSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-emerald-500/50">
+                <option value="rce">Remote Code Execution (RCE) via WebView / Native</option>
+                <option value="idor">IDOR / BOLA Endpoint Auth Bypass</option>
+                <option value="storage">Insecure Storage of Tokens / DB Credentials</option>
+                <option value="exported">Exported Component Permission Bypass</option>
+                <option value="deeplink">Insecure Deep Link Intent Hijacking</option>
+                <option value="pinning">Defeatable SSL Certificate Pinning</option>
+                <option value="backup">Production allowBackup / Debuggable Flag</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-mono text-slate-400 uppercase font-bold mb-2">Impact Scope</label>
+              <div class="flex gap-3">
+                <button class="impact-btn active flex-1 py-3 px-4 rounded-xl border text-xs font-mono font-bold transition-all bg-emerald-500 text-slate-950 border-emerald-400" data-impact="user">Single User</button>
+                <button class="impact-btn flex-1 py-3 px-4 rounded-xl border text-xs font-mono font-bold transition-all bg-slate-950 text-slate-400 border-slate-800" data-impact="all">All Users / Global</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-800 font-mono">
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+              <div class="text-[10px] text-slate-500 uppercase font-bold mb-1">CVSS v3.1 SEVERITY</div>
+              <div id="cvssScoreText" class="text-3xl font-extrabold text-rose-400">9.8 CRITICAL</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+              <div class="text-[10px] text-slate-500 uppercase font-bold mb-1">VECTOR STRING</div>
+              <div id="cvssVectorText" class="text-xs text-slate-300 break-all">CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+              <div class="text-[10px] text-slate-500 uppercase font-bold mb-1">ESTIMATED BOUNTY RANGE</div>
+              <div id="cvssBountyText" class="text-xl font-extrabold text-emerald-400">$5,000 — $15,000+</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- PRACTICE TARGETS SECTION -->
       <section id="targets" class="py-16 px-6 sm:px-12 border-b border-slate-800/80 max-w-6xl mx-auto">
         <div class="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold tracking-wider uppercase mb-3">
