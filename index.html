@@ -1695,7 +1695,7 @@ pause</code></pre>
               <p class="text-slate-400 text-xs">Convert Burp Suite `.cer` to `.crt` DER format for injection into custom Frida SSL pinning bypass scripts.</p>
               <pre class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-cyan-300 overflow-x-auto"># 1. Convert burpsuite.cer to DER crt format
 openssl x509 -in burpsuite.cer -out cert-der.crt -outform DER
-openssl x509 -inform der -in cert.der -out burp.pem
+openssl x509 -inform der -in cert-der.crt -out burp.pem
 
 # 2. Push cert to target device
 adb push cert-der.crt /data/local/tmp/
