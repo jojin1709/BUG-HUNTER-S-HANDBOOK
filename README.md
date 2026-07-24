@@ -170,6 +170,42 @@ adb reboot
 
 ---
 
+## ⚡ Automated Grep-Sensitive-Words Script (`Grep-Sensitive-Words.sh`)
+
+Recursively search decompiled APK source code for secret keys, tokens, AES ciphers, and hardcoded URLs into isolated results files:
+
+```bash
+#!/usr/bin/env bash
+# Grep-Sensitive-Words.sh - Automated Secret Key Extraction
+if [ -z "$1" ]; then echo "Usage: ./Grep-Sensitive-Words.sh <APK_Decompiled_Folder>"; exit 1; fi
+SEARCH_DIR="$1"
+mkdir -p grep_results
+KEYWORDS=("accesskey" "admin" "aes" "api_key" "apikey" "checkClientTrusted" "crypt" "http:" "https:" "password" "pinning" "secret" "SHA256" "SharedPreferences" "superuser" "token" "X509TrustManager" "insert into")
+
+for keyword in "${KEYWORDS[@]}"; do
+  SAFE_KEY=$(echo "$keyword" | sed 's/[: ]/_/g')
+  grep -EHirn --include=\*.{smali,xml,java,txt} "$keyword" "$SEARCH_DIR" > "grep_results/${SAFE_KEY}.txt"
+done
+echo "[+] Scan completed! Results stored in grep_results/"
+```
+
+---
+
+## 📱 Focused PIDCAT Logcat Filtering
+
+Capture clean, focused logs from a single target package ID:
+
+```bash
+# Clone pidcat repository
+git clone https://github.com/JakeWharton/pidcat.git
+cd pidcat
+
+# Filter logcat live for target package
+python pidcat.py -s emulator-5554 com.target.app
+```
+
+---
+
 ## Step-by-Step Methodology Roadmap
 
 ```text

@@ -1587,6 +1587,152 @@ adb reboot</pre>
             </div>
           </details>
 
+          <!-- GREP SENSITIVE WORDS AUTOMATION SCRIPT -->
+          <details class="adv group bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition-all">
+            <summary class="flex items-center justify-between p-6 text-slate-100 font-bold text-base cursor-pointer select-none">
+              <span class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                Automated Grep-Sensitive-Words.sh Script
+              </span>
+              <span class="text-emerald-400 transform group-open:rotate-180 transition-transform font-mono text-sm">&darr;</span>
+            </summary>
+            <div class="px-6 pb-6 text-xs text-slate-300 space-y-4 border-t border-slate-800/60 pt-4 font-mono">
+              <p class="text-slate-400 text-xs">Recursively search decompiled APK source code for secret keys, tokens, AES ciphers, and hardcoded URLs into isolated results files.</p>
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-emerald-300 relative">
+                <button class="copy-btn absolute top-3 right-3 text-xs text-slate-400 hover:text-emerald-400">Copy Script</button>
+                <pre class="overflow-x-auto"><code>#!/usr/bin/env bash
+# Grep-Sensitive-Words.sh - Automated Secret Key Extraction
+if [ -z "$1" ]; then echo "Usage: ./Grep-Sensitive-Words.sh &lt;APK_Decompiled_Folder&gt;"; exit 1; fi
+SEARCH_DIR="$1"
+mkdir -p grep_results
+KEYWORDS=("accesskey" "admin" "aes" "api_key" "apikey" "checkClientTrusted" "crypt" "http:" "https:" "password" "pinning" "secret" "SHA256" "SharedPreferences" "superuser" "token" "X509TrustManager" "insert into")
+
+for keyword in "${KEYWORDS[@]}"; do
+  SAFE_KEY=$(echo "$keyword" | sed 's/[: ]/_/g')
+  grep -EHirn --include=\*.{smali,xml,java,txt} "$keyword" "$SEARCH_DIR" &gt; "grep_results/${SAFE_KEY}.txt"
+done
+echo "[+] Scan completed! Results stored in grep_results/"</code></pre>
+              </div>
+            </div>
+          </details>
+
+          <!-- PIDCAT LOGGING GUIDE -->
+          <details class="adv group bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition-all">
+            <summary class="flex items-center justify-between p-6 text-slate-100 font-bold text-base cursor-pointer select-none">
+              <span class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-teal-400"></span>
+                PIDCAT Logcat Filtering Studio
+              </span>
+              <span class="text-teal-400 transform group-open:rotate-180 transition-transform font-mono text-sm">&darr;</span>
+            </summary>
+            <div class="px-6 pb-6 text-xs text-slate-300 space-y-4 border-t border-slate-800/60 pt-4 font-mono">
+              <p class="text-slate-400 text-xs">Filter Android logcat logs live by package ID to eliminate noise and isolate sensitive token leakage.</p>
+              <pre class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-teal-300 overflow-x-auto"># Clone pidcat repository
+git clone https://github.com/JakeWharton/pidcat.git &amp;&amp; cd pidcat
+
+# Run against target application over USB or emulator
+python pidcat.py -s emulator-5554 com.target.app</pre>
+            </div>
+          </details>
+
+          <!-- AUTOMATED EMULATOR BOOTSTRAP SCRIPT (androidBB.bat) -->
+          <details class="adv group bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition-all">
+            <summary class="flex items-center justify-between p-6 text-slate-100 font-bold text-base cursor-pointer select-none">
+              <span class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                Automated Emulator Bootstrapper (`androidBB.bat`)
+              </span>
+              <span class="text-emerald-400 transform group-open:rotate-180 transition-transform font-mono text-sm">&darr;</span>
+            </summary>
+            <div class="px-6 pb-6 text-xs text-slate-300 space-y-4 border-t border-slate-800/60 pt-4 font-mono">
+              <p class="text-slate-400 text-xs">Automated Windows batch script to start AVD emulator, wait for boot completion, mount root, and launch `frida-server` in background.</p>
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-emerald-300 relative">
+                <button class="copy-btn absolute top-3 right-3 text-xs text-slate-400 hover:text-emerald-400">Copy Batch Script</button>
+                <pre class="overflow-x-auto"><code>@echo off
+REM Start emulator
+start "" emulator -avd Pixel6-Root -writable-system -no-snapshot -port 5560
+
+echo Waiting for emulator to connect to ADB...
+adb wait-for-device
+
+echo Waiting for Android to finish booting...
+:wait_boot
+for /f "delims=" %%a in ('adb shell getprop sys.boot_completed 2^>nul') do (
+    if "%%a"=="1" goto booted
+)
+timeout /t 2 >nul
+goto wait_boot
+
+:booted
+echo Boot completed. Waiting extra for system to be ready...
+timeout /t 5 >nul
+
+echo Restarting ADB as root...
+adb root
+timeout /t 2 >nul
+adb remount
+timeout /t 2 >nul
+
+echo Starting frida-server...
+adb shell "./data/local/tmp/frida-server &"
+
+echo Done.
+pause</code></pre>
+              </div>
+            </div>
+          </details>
+
+          <!-- FRIDA SSL CERTIFICATE ISSUE GUIDE -->
+          <details class="adv group bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition-all">
+            <summary class="flex items-center justify-between p-6 text-slate-100 font-bold text-base cursor-pointer select-none">
+              <span class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                Frida Custom DER Cert SSL Pinning Conversion Guide
+              </span>
+              <span class="text-cyan-400 transform group-open:rotate-180 transition-transform font-mono text-sm">&darr;</span>
+            </summary>
+            <div class="px-6 pb-6 text-xs text-slate-300 space-y-4 border-t border-slate-800/60 pt-4 font-mono">
+              <p class="text-slate-400 text-xs">Convert Burp Suite `.cer` to `.crt` DER format for injection into custom Frida SSL pinning bypass scripts.</p>
+              <pre class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-cyan-300 overflow-x-auto"># 1. Convert burpsuite.cer to DER crt format
+openssl x509 -in burpsuite.cer -out cert-der.crt -outform DER
+openssl x509 -inform der -in cert.der -out burp.pem
+
+# 2. Push cert to target device
+adb push cert-der.crt /data/local/tmp/
+adb shell chmod 644 /data/local/tmp/cert-der.crt
+
+# 3. Reference in Frida Java Script
+var fileInputStream = FileInputStream.$new("/data/local/tmp/cert-der.crt");
+var bufferedInputStream = BufferedInputStream.$new(fileInputStream);</pre>
+            </div>
+          </details>
+
+          <!-- MOBSF DOCKER STATIC & DYNAMIC GUIDE -->
+          <details class="adv group bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition-all">
+            <summary class="flex items-center justify-between p-6 text-slate-100 font-bold text-base cursor-pointer select-none">
+              <span class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                MobSF Docker Guide (Static + Dynamic Analysis)
+              </span>
+              <span class="text-amber-400 transform group-open:rotate-180 transition-transform font-mono text-sm">&darr;</span>
+            </summary>
+            <div class="px-6 pb-6 text-xs text-slate-300 space-y-4 border-t border-slate-800/60 pt-4 font-mono">
+              <div>
+                <div class="text-amber-400 font-bold mb-1">Static Analysis Only</div>
+                <pre class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-slate-300">docker run -it --rm -p 8000:8000 opensecurity/mobile-security-framework-mobsf:latest</pre>
+              </div>
+
+              <div>
+                <div class="text-emerald-400 font-bold mb-1">Static + Dynamic Analysis (Connected to Emulator)</div>
+                <pre class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-emerald-300">docker run -it --rm \
+  -p 8000:8000 \
+  -p 1337:1337 \
+  -e MOBSF_ANALYZER_IDENTIFIER=emulator-5554 \
+  opensecurity/mobile-security-framework-mobsf:latest</pre>
+              </div>
+            </div>
+          </details>
+
         </div>
       </section>
 
