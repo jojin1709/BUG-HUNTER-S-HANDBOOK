@@ -3,7 +3,7 @@
 
 <div align="center">
 
-# ⚡ Android Bug Hunter's Handbook (v3.5 Master Edition)
+# ⚡ Android Bug Hunter's Handbook
 
 ![Android Security](https://img.shields.io/badge/Platform-Android_13%2B_%2F_14-emerald?style=for-the-badge&logo=android)
 ![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind_CSS-38bdf8?style=for-the-badge&logo=tailwindcss)
