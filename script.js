@@ -309,22 +309,45 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   refreshProgress();
 
-  // ---- Active Sidebar Nav Link Scrollspy ----
+  // ---- Active Sidebar Nav Link Scrollspy & Click Handler ----
   const navLinks = document.querySelectorAll('.navlink');
-  const sections = Array.from(navLinks).map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
 
-  function onScroll() {
-    let idx = 0;
-    const scrollPos = window.scrollY + 140;
-    sections.forEach((sec, i) => {
-      if (sec && sec.offsetTop <= scrollPos) {
-        idx = i;
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      const targetId = link.getAttribute('href');
+      if (targetId && targetId.startsWith('#')) {
+        const targetSec = document.querySelector(targetId);
+        if (targetSec) {
+          e.preventDefault();
+          targetSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (window.innerWidth < 1024 && sidebar) {
+            sidebar.classList.add('-translate-x-full');
+          }
+        }
       }
     });
+  });
+
+  function onScroll() {
+    const scrollPos = window.scrollY + 180;
+    let currentActive = null;
+
+    navLinks.forEach(link => {
+      const targetId = link.getAttribute('href');
+      if (targetId && targetId.startsWith('#')) {
+        const sec = document.querySelector(targetId);
+        if (sec && sec.offsetTop <= scrollPos) {
+          currentActive = link;
+        }
+      }
+    });
+
     navLinks.forEach(l => l.classList.remove('active'));
-    if (navLinks[idx]) navLinks[idx].classList.add('active');
+    if (currentActive) {
+      currentActive.classList.add('active');
+    }
   }
 
-  window.addEventListener('scroll', onScroll);
+  window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 });
