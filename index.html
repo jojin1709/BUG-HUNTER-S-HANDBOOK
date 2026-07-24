@@ -1459,25 +1459,40 @@
             <summary class="flex items-center justify-between p-6 text-slate-100 font-bold text-base cursor-pointer select-none">
               <span class="flex items-center gap-3">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-                Objection Command Cheat Sheet (SSL, Root, Keystore, Clipboard)
+                Objection Command Cheat Sheet &amp; Expanded Master Reference
               </span>
               <span class="text-emerald-400 transform group-open:rotate-180 transition-transform font-mono text-sm">&darr;</span>
             </summary>
-            <div class="px-6 pb-6 text-xs sm:text-sm text-slate-300 space-y-3 border-t border-slate-800/60 pt-4 font-mono">
-              <pre class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-emerald-300 overflow-x-auto"># Explore &amp; Connect to Target
-objection --g "com.target.app" explore
-
-# SSL Certificate Pinning Bypass
-android sslpinning disable
-
-# Root Detection Bypass
-android root disable
-
-# Keystore Dump
-android keystore list
-
-# Clipboard Monitor
-android clipboard monitor</pre>
+            <div class="px-6 pb-6 text-xs text-slate-300 space-y-4 border-t border-slate-800/60 pt-4 font-mono">
+              <p class="text-slate-400 text-xs">Complete reference of Objection runtime commands for root detection, SSL pinning, class hooking, memory inspection, and Intent invocation.</p>
+              
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse border border-slate-800 text-xs">
+                  <thead>
+                    <tr class="bg-slate-950 text-emerald-400 border-b border-slate-800">
+                      <th class="p-2 border-r border-slate-800 font-bold">Category</th>
+                      <th class="p-2 border-r border-slate-800 font-bold">Command</th>
+                      <th class="p-2 font-bold">Description / Purpose</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-800/60 bg-slate-950/60">
+                    <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Root Bypass</td><td class="p-2 border-r border-slate-800 text-emerald-300">android root disable</td><td class="p-2">Disable common root checks (RootBeer, SafetyNet, etc.)</td></tr>
+                    <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Root Bypass</td><td class="p-2 border-r border-slate-800 text-emerald-300">android root simulate</td><td class="p-2">Fake a non-rooted environment to target app</td></tr>
+                    <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">SSL Pinning</td><td class="p-2 border-r border-slate-800 text-emerald-300">android sslpinning disable</td><td class="p-2">Bypass OkHttp, TrustManager, and Xamarin SSL pinning</td></tr>
+                    <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Class Hooking</td><td class="p-2 border-r border-slate-800 text-emerald-300">android hooking list classes</td><td class="p-2">List all currently loaded DEX classes</td></tr>
+                    <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Class Hooking</td><td class="p-2 border-r border-slate-800 text-emerald-300">android hooking search classes &lt;keyword&gt;</td><td class="p-2">Search classes matching keyword (e.g. *User*)</td></tr>
+                    <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Method Hooking</td><td class="p-2 border-r border-slate-800 text-emerald-300">android hooking watch class &lt;class&gt;</td><td class="p-2">Trace all methods inside target class</td></tr>
+                    <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Method Hooking</td><td class="p-2 border-r border-slate-800 text-emerald-300">android hooking set return_value &lt;method&gt; false</td><td class="p-2">Force a method to return false (root check bypass)</td></tr>
+                    <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Memory</td><td class="p-2 border-r border-slate-800 text-emerald-300">memory list modules</td><td class="p-2">List loaded native shared libraries (.so files)</td></tr>
+                    <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Memory</td><td class="p-2 border-r border-slate-800 text-emerald-300">memory search "&lt;pattern&gt;"</td><td class="p-2">Search process RAM for hardcoded string patterns</td></tr>
+                    <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">File System</td><td class="p-2 border-r border-slate-800 text-emerald-300">file download &lt;remote&gt; &lt;local&gt;</td><td class="p-2">Pull private app database or file to host PC</td></tr>
+                    <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">SQLite</td><td class="p-2 border-r border-slate-800 text-emerald-300">sqlite connect &lt;db_path&gt;</td><td class="p-2">Connect to local SQLite database directly</td></tr>
+                    <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Intent Control</td><td class="p-2 border-r border-slate-800 text-emerald-300">android intent launch_activity &lt;Activity&gt;</td><td class="p-2">Start target activity directly via Intent</td></tr>
+                    <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">KeyStore</td><td class="p-2 border-r border-slate-800 text-emerald-300">android keystore list</td><td class="p-2">List Android hardware/software KeyStore entries</td></tr>
+                    <tr><td class="p-2 border-r border-slate-800 font-bold text-slate-300">Clipboard</td><td class="p-2 border-r border-slate-800 text-emerald-300">android clipboard monitor</td><td class="p-2">Monitor clipboard changes live for credentials</td></tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </details>
 
