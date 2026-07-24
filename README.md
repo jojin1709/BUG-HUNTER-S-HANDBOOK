@@ -1,5 +1,6 @@
 # ⚡ Android Bug Hunter's Handbook (v3.5 Master Edition)
 
+> Developed by **[JOJIN JOHN](https://github.com/jojin1709)**
 > An interactive, modern, and comprehensive field guide & security portal for Android Security Researchers, Bug Bounty Hunters, and Penetration Testers.
 
 ![Android Security](https://img.shields.io/badge/Platform-Android_13%2B_%2F_14-emerald?style=for-the-badge&logo=android)
